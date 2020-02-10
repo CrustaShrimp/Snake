@@ -6,6 +6,9 @@
 
 extern const int g_iGridSizePlusOne;
 
+class GridElement;
+struct GridNumberComparison;
+
 class Game
 {
 public:
@@ -21,11 +24,23 @@ public:
 	Game();
 	~Game();
 	void Play();
+
+	void InitialiseGame();
+
 private:
+	//************************************
+	// Method:    GenerateFood
+	// FullName:  Game::GenerateFood
+	// Access:    private 
+	// Returns:   GridElement
+	// Qualifier:
+	//************************************
 	GridElement GenerateFood();
 
-	int							m_iScore;
-	std::set<GridElement>		m_sSnake;
-	GridElement					m_Food;
-	DIRECTION					m_eDirection;
+	bool TestElementInSnake(const GridElement& ToTest);
+
+	int												m_iScore;
+	std::vector<GridElement>						m_vSnake;
+	GridElement										m_Food;
+	DIRECTION										m_eDirection;
 };
