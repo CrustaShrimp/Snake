@@ -128,6 +128,51 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+	case WM_KEYDOWN:
+		switch (wParam)
+		{
+		case VK_LEFT:
+
+			// Process the LEFT ARROW key. 
+
+			break;
+
+		case VK_RIGHT:
+
+			// Process the RIGHT ARROW key. 
+
+			break;
+
+		case VK_UP:
+
+			// Process the UP ARROW key. 
+
+			break;
+
+		case VK_DOWN:
+
+			// Process the DOWN ARROW key. 
+
+			break;
+
+		case VK_ESCAPE:
+
+			// Process the ESC key. 
+
+			break;
+
+		case VK_RETURN:
+
+			// Process the RETURN/ENTER key. 
+
+			break;
+
+			// Process other non-character keystrokes. 
+
+		default:
+			break;
+		}
+
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
