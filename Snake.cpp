@@ -11,6 +11,8 @@
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
+Game TheGame;									// Instance of the game
+WindowProperties WProperties;					// Window properties class
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -27,8 +29,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     // TODO: Place code here.
-	Game TheGame;
-	TheGame.Play();
+	TheGame.InitialiseGame();
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -53,6 +54,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
+		TheGame.Play();
     }
 
     return (int) msg.wParam;
@@ -78,7 +80,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hInstance      = hInstance;
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SNAKE));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
+    wcex.hbrBackground  = (HBRUSH)(COLOR_BACKGROUND);
     wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_SNAKE);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
@@ -100,14 +102,14 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Store instance handle in our global variable
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+   DWORD dwStyle = (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU);
+   HWND  hWnd = CreateWindowW(szWindowClass, szTitle, dwStyle,
+      0, 0, 460, 500, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
       return FALSE;
    }
-
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
@@ -119,6 +121,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 //  PURPOSE: Processes messages for the main window.
 //
+//  WM_KEYDOWN  - process keys pressed
 //  WM_COMMAND  - process the application menu
 //  WM_PAINT    - Paint the main window
 //  WM_DESTROY  - post a quit message and return
@@ -126,50 +129,56 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	RECT rect = { 30, 20, 200, 100 };
+	POINT pt[4] = { 800, 400, 400, 300, 600, 400, 600, 400 };
+
     switch (message)
     {
+	case WM_SIZE:
+		WProperties.SetWidth(LOWORD(lParam));
+		WProperties.SetHeight(HIWORD(lParam));
 	case WM_KEYDOWN:
 		switch (wParam)
 		{
 		case VK_LEFT:
 
 			// Process the LEFT ARROW key. 
-
+			TheGame.SetDirection(Game::DIRECTION::LEFT);
 			break;
 
 		case VK_RIGHT:
 
 			// Process the RIGHT ARROW key. 
-
+			TheGame.SetDirection(Game::DIRECTION::RIGHT);
 			break;
 
 		case VK_UP:
 
 			// Process the UP ARROW key. 
-
+			TheGame.SetDirection(Game::DIRECTION::UP);
 			break;
 
 		case VK_DOWN:
 
 			// Process the DOWN ARROW key. 
-
+			TheGame.SetDirection(Game::DIRECTION::DOWN);
 			break;
 
 		case VK_ESCAPE:
 
 			// Process the ESC key. 
-
+			// TODO
 			break;
 
 		case VK_RETURN:
 
 			// Process the RETURN/ENTER key. 
-
+			// TODO
 			break;
 
 			// Process other non-character keystrokes. 
-
 		default:
+			return -1;
 			break;
 		}
 
@@ -186,15 +195,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 DestroyWindow(hWnd);
                 break;
             default:
-                return DefWindowProc(hWnd, message, wParam, lParam);
+				return DefWindowProc(hWnd, message, wParam, lParam);
             }
         }
         break;
     case WM_PAINT:
         {
+			const int iWidth  = WProperties.GetWidth ();
+			const int iHeight = WProperties.GetHeight();
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: Add any drawing code that uses hdc here...
+			HPEN hpen;
+			hpen = CreatePen(PS_SOLID, 4, RGB(0, 0, 0));
+			SelectObject(hdc, hpen);
+			Rectangle(hdc, 20, 20, 420, 420);
+			SetPixel(hdc, 22, 22, RGB(200, 0, 0));
+			DeleteObject(hpen);
             EndPaint(hWnd, &ps);
         }
         break;
@@ -204,7 +221,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
-    return 0;
+    return -1;
 }
 
 // Message handler for about box.
@@ -225,4 +242,15 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     return (INT_PTR)FALSE;
+}
+
+WindowProperties::WindowProperties()
+:m_iWidth(0)
+,m_iHeight(0)
+{
+
+}
+
+WindowProperties::~WindowProperties()
+{
 }
