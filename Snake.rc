@@ -133,7 +133,7 @@ END
 STRINGTABLE
 BEGIN
    IDC_SNAKE   "SNAKE"
-   IDS_APP_TITLE       "Snake"
+   IDS_APP_TITLE       "Snake, by Shrimp"
 END
 
 #endif
