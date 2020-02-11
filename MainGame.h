@@ -1,8 +1,7 @@
 #pragma once
-
-#include "SnakeBehaviour.h"
 #include "GridElement.h"
 #include <set>
+#include <vector>
 
 extern const int g_iGridSizePlusOne;
 
@@ -23,9 +22,36 @@ public:
 
 	Game();
 	~Game();
+	
+	//************************************
+	// Method:    InitialiseGame
+	// FullName:  Game::InitialiseGame
+	// Access:    public 
+	// Returns:   void
+	// Qualifier:
+	//************************************
+	void InitialiseGame();
+
+
+	//************************************
+	// Method:    Play
+	// FullName:  Game::Play
+	// Access:    public 
+	// Returns:   void
+	// Qualifier:
+	//************************************
 	void Play();
 
-	void InitialiseGame();
+	//************************************
+	// Method:    SetDirection
+	// FullName:  Game::SetDirection
+	// Access:    public 
+	// Returns:   void
+	// Qualifier:
+	// Parameter: const DIRECTION eDirection
+	//************************************
+	void SetDirection(const DIRECTION eDirection);
+
 
 private:
 	//************************************
@@ -33,14 +59,26 @@ private:
 	// FullName:  Game::GenerateFood
 	// Access:    private 
 	// Returns:   GridElement
-	// Qualifier:
+	// Qualifier: const
 	//************************************
-	GridElement GenerateFood();
+	GridElement GenerateFood() const;
 
-	bool TestElementInSnake(const GridElement& ToTest);
+
+	//************************************
+	// Method:    TestElementInSnake
+	// FullName:  Game::TestElementInSnake
+	// Access:    private 
+	// Returns:   bool
+	// Qualifier: const
+	// Parameter: const GridElement & ToTest
+	//************************************
+	bool TestElementInSnake(const GridElement& ToTest) const;
+
 
 	int												m_iScore;
 	std::vector<GridElement>						m_vSnake;
 	GridElement										m_Food;
 	DIRECTION										m_eDirection;
+	bool											m_bInitialized;
+	bool											m_bGameRunning;
 };
