@@ -155,14 +155,12 @@
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Snake.h" />
-    <ClInclude Include="SnakeBehaviour.h" />
     <ClInclude Include="GridElement.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainGame.cpp" />
     <ClCompile Include="Snake.cpp" />
-    <ClCompile Include="SnakeBehaviour.cpp" />
     <ClCompile Include="GridElement.cpp" />
   </ItemGroup>
   <ItemGroup>
