@@ -1,7 +1,6 @@
 #pragma once
+#include "Snake.h"
 #include <utility>
-
-extern const int g_iGridSizePlusOne;
 
 class GridElement
 {
@@ -13,7 +12,7 @@ public:
 
 	bool operator == (const GridElement) const;
 
-//	std::pair<int, int> GetXY() const { return std::make_pair(m_iX, m_iY); }
+	IntPair GetXY() const { return std::make_pair(m_iX, m_iY); }
 	
 	void AddX(const int iAddX);
 	void AddY(const int iAddY);

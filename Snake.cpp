@@ -1,18 +1,23 @@
 // Snake.cpp : Defines the entry point for the application.
 //
 
-#include "framework.h"
-#include "Snake.h"
 #include "MainGame.h"
+#include "Snake.h"
+#include "framework.h"
+#include <algorithm>
+#include <atlstr.h>
 
 #define MAX_LOADSTRING 100
-
+#define DRAWRATE 20
+#define LINETHICKNESS 4
 // Global Variables:
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 Game TheGame;									// Instance of the game
-WindowProperties WProperties;					// Window properties class
+
+static int iStart = 20;
+static int iEnd = iStart + TranslateGameToDisplay(GRIDSIZE);
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -54,9 +59,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
-		TheGame.Play();
     }
-
     return (int) msg.wParam;
 }
 
@@ -110,10 +113,66 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    {
       return FALSE;
    }
+   // handle to main window 
+   // timer identifier 
+   // 10-second interval 
+
+   SetTimer(hWnd, IDS_TIMER, DRAWRATE, (TIMERPROC)NULL);     // no timer callback 
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
-
    return TRUE;
+}
+
+void DrawGivenGEWithColor(const GridElement& GE, HDC hdc, const HBRUSH hbrBrush)
+{
+	// Get XY pair in game coordinates
+	const IntPair XYPair = GE.GetXY();
+	// Translate to display coordinates
+	const IntPair DisplayPair = TranslateGameToDisplay(XYPair);
+	// Get XY values of the pixel (note: pixel is translated to square of size TranslateGameToDisplay())
+	const int iLeft = iStart + DisplayPair.first;
+	const int iRight = iLeft + TranslateGameToDisplay(1);
+	const int iTop = iStart + DisplayPair.second;
+	const int iBottom = iTop + TranslateGameToDisplay(1);
+	RECT rPixel;
+	SetRect(&rPixel, iLeft, iTop, iRight, iBottom);
+	FillRect(hdc, &rPixel, hbrBrush);
+}
+
+void DrawSnake(HWND hWnd, HDC hdc)
+{
+	// Define the brushes
+	const HBRUSH hbrBlack  = CreateSolidBrush(RGB(  0,   0,   0));
+	const HBRUSH hbrOrange = CreateSolidBrush(RGB(255, 180,   0));
+
+	// Get snake vector
+	const std::vector<GridElement>* const pSnakeVector = TheGame.GetSnake();
+	// Draw each element of the snake
+	std::for_each(pSnakeVector->begin(), pSnakeVector->end(), [&](const GridElement& GE){DrawGivenGEWithColor(GE, hdc, hbrBlack);});
+
+	//Get the food point
+	const GridElement& GEFood = TheGame.GetFoodRef();
+	DrawGivenGEWithColor(GEFood,hdc,hbrOrange);
+
+	// Draw score:
+	//Get score and make it into a string
+	// 00000
+	const int iScore = TheGame.GetScore();
+	CString strScore;
+	strScore.Format(_T("%05d\0"),iScore);
+	
+	// Determine window rect
+	RECT rcWindow;
+	GetClientRect(hWnd,&rcWindow);
+	rcWindow.top++;
+	rcWindow.bottom--;
+	rcWindow.left+=iStart;
+	rcWindow.right--;
+	SetTextColor(hdc, RGB(0,0,0));
+
+	DrawText(hdc, strScore, -1, &rcWindow, DT_LEFT | DT_TOP | DT_SINGLELINE);
+	DeleteObject(hbrBlack);
+	DeleteObject(hbrOrange);
 }
 
 //
@@ -123,20 +182,15 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 //  WM_KEYDOWN  - process keys pressed
 //  WM_COMMAND  - process the application menu
+//	WM_TIMER	- every X seconds
 //  WM_PAINT    - Paint the main window
 //  WM_DESTROY  - post a quit message and return
 //
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	RECT rect = { 30, 20, 200, 100 };
-	POINT pt[4] = { 800, 400, 400, 300, 600, 400, 600, 400 };
-
     switch (message)
     {
-	case WM_SIZE:
-		WProperties.SetWidth(LOWORD(lParam));
-		WProperties.SetHeight(HIWORD(lParam));
 	case WM_KEYDOWN:
 		switch (wParam)
 		{
@@ -181,7 +235,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			return -1;
 			break;
 		}
-
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -199,18 +252,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+	case WM_TIMER:
+		TheGame.Play();
+		InvalidateRect(hWnd, NULL, FALSE);
+		UpdateWindow(hWnd);
     case WM_PAINT:
         {
-			const int iWidth  = WProperties.GetWidth ();
-			const int iHeight = WProperties.GetHeight();
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: Add any drawing code that uses hdc here...
 			HPEN hpen;
-			hpen = CreatePen(PS_SOLID, 4, RGB(0, 0, 0));
+			hpen = CreatePen(PS_SOLID, LINETHICKNESS, RGB(0, 0, 0));
 			SelectObject(hdc, hpen);
-			Rectangle(hdc, 20, 20, 420, 420);
-			SetPixel(hdc, 22, 22, RGB(200, 0, 0));
+			Rectangle(hdc, iStart - LINETHICKNESS/2, iStart - LINETHICKNESS/2, iEnd, iEnd);
+			DrawSnake(hWnd, hdc);
 			DeleteObject(hpen);
             EndPaint(hWnd, &ps);
         }
@@ -244,13 +299,9 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     return (INT_PTR)FALSE;
 }
 
-WindowProperties::WindowProperties()
-:m_iWidth(0)
-,m_iHeight(0)
+IntPair TranslateGameToDisplay(const IntPair Coordinates)
 {
-
-}
-
-WindowProperties::~WindowProperties()
-{
+	const int iX = TranslateGameToDisplay(Coordinates.first);
+	const int iY = TranslateGameToDisplay(Coordinates.second);
+	return std::make_pair(iX, iY);
 }

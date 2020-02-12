@@ -3,8 +3,6 @@
 #include <set>
 #include <vector>
 
-extern const int g_iGridSizePlusOne;
-
 class GridElement;
 struct GridNumberComparison;
 
@@ -41,6 +39,32 @@ public:
 	// Qualifier:
 	//************************************
 	void Play();
+
+	// Method:    GetSnake
+	// FullName:  Game::GetSnake
+	// Access:    public 
+	// Returns:   const std::vector<GridElement>* const
+	// Qualifier: const
+	//************************************
+	const std::vector<GridElement>* const GetSnake() const { return &m_vSnake; }
+
+	//************************************
+	// Method:    GetFoodRef
+	// FullName:  Game::GetFoodRef
+	// Access:    public 
+	// Returns:   const GridElement&
+	// Qualifier: const
+	//************************************
+	const GridElement& GetFoodRef() const { return m_Food; }
+
+	//************************************
+	// Method:    GetScore
+	// FullName:  Game::GetScore
+	// Access:    public 
+	// Returns:   int
+	// Qualifier: const
+	//************************************
+	int GetScore() const { return m_iScore; }
 
 	//************************************
 	// Method:    SetDirection

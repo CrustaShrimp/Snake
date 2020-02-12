@@ -1,9 +1,8 @@
 #include "MainGame.h"
+#include "Snake.h"
 #include <cstdlib>
 #include <cassert>
 #include <numeric>
-
-const int g_iGridSizePlusOne = 51;
 
 Game::Game()
 	:m_iScore(0)
@@ -50,12 +49,12 @@ void Game::Play()
 	}
 	case DIRECTION::UP:
 	{
-		NewSnakeHead.AddY(1);
+		NewSnakeHead.AddY(-1);
 		break;
 	}
 	case DIRECTION::DOWN:
 	{
-		NewSnakeHead.AddX(-1);
+		NewSnakeHead.AddY(1);
 		break;
 	}
 	default:
@@ -98,10 +97,7 @@ void Game::Play()
 
 void Game::SetDirection(const DIRECTION eDirection)
 {
-	if (!m_bGameRunning)
-	{
-		m_bGameRunning = true;
-	}
+	m_bGameRunning = true;
 	assert(eDirection != DIRECTION::UNDEFINED);
 	switch (eDirection)
 	{
@@ -130,7 +126,7 @@ void Game::InitialiseGame()
 	// *************************************************
 	// Init:
 	// 1: init snake at some point
-	const int iMiddle = (g_iGridSizePlusOne - 1) / 2;
+	const int iMiddle = (GRIDSIZE - 1) / 2;
 	const GridElement SnakeBeginPoint(iMiddle, iMiddle);
 	m_vSnake.push_back(SnakeBeginPoint);
 
@@ -151,8 +147,8 @@ GridElement Game::GenerateFood() const
 	int iTries = 0;
 	while (!bFoodLocationVerified && iTries < 50)
 	{
-		const int iFoodX = std::rand() % g_iGridSizePlusOne;
-		const int iFoodY = std::rand() % g_iGridSizePlusOne;
+		const int iFoodX = std::rand() % GRIDSIZE;
+		const int iFoodY = std::rand() % GRIDSIZE;
 		GridElement NewFood(iFoodX, iFoodY);
 		// Check validity of the NewFood location, it cannot be inside the snake
 		bFoodLocationVerified = !TestElementInSnake(NewFood);

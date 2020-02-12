@@ -1,19 +1,10 @@
 #pragma once
 
 #include "resource.h"
-class WindowProperties
-{
-public:
-	WindowProperties();
-	~WindowProperties();
+#include <utility>
+#define GRIDSIZE 50
 
-	void SetWidth (const int iWidth ) { m_iWidth  = iWidth ; }
-	void SetHeight(const int iHeight) { m_iHeight = iHeight; }
+typedef std::pair<int, int> IntPair;
 
-	int GetWidth () const { return m_iWidth; }
-	int GetHeight() const { return m_iHeight; }
-protected:
-private:
-	int m_iWidth;
-	int m_iHeight;
-};
+static int TranslateGameToDisplay(const int iGameSize) { return 8 * iGameSize; }
+static IntPair TranslateGameToDisplay(const IntPair Coordinates);

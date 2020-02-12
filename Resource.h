@@ -16,6 +16,7 @@
 #ifndef IDC_STATIC
 #define IDC_STATIC				-1
 #endif
+#define IDS_TIMER			543
 // Next default values for new objects
 //
 #ifdef APSTUDIO_INVOKED

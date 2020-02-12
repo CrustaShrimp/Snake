@@ -9,8 +9,8 @@ GridElement::GridElement()
 }
 
 GridElement::GridElement(const int iX, const int iY)
-	:m_iX(iX % g_iGridSizePlusOne)
-	,m_iY(iY % g_iGridSizePlusOne)
+	:m_iX(iX % GRIDSIZE)
+	,m_iY(iY % GRIDSIZE)
 	,m_bActive(false)
 {
 
@@ -30,10 +30,10 @@ bool GridElement::operator==(const GridElement GECompare) const
 
 void GridElement::AddX(const int iAddX)
 {
-	m_iX = (m_iX + iAddX) % g_iGridSizePlusOne;
+	m_iX = (m_iX + iAddX + GRIDSIZE) % GRIDSIZE; // Add GRIDSIZE for negative clipping
 }
 
 void GridElement::AddY(const int iAddY)
 {
-	m_iY = (m_iY + iAddY) % g_iGridSizePlusOne;
+	m_iY = (m_iY + iAddY + GRIDSIZE) % GRIDSIZE; // Add GRIDSIZE for negative clipping
 }
