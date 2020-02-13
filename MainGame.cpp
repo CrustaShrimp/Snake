@@ -9,6 +9,7 @@ Game::Game()
 	,m_eDirection(DIRECTION::UNDEFINED)
 	,m_bInitialized(false)
 	,m_bGameRunning(false)
+	,m_bGameOver(false)
 {
 
 }
@@ -67,8 +68,9 @@ void Game::Play()
 	if (TestElementInSnake(NewSnakeHead))
 	{
 		// Game Over
-		// TODO
-		//GameOver();
+		m_bGameRunning = false;
+		m_bGameOver = true;
+		return;
 	}
 
 	// Add new snakehead to the start of the vector
@@ -132,9 +134,12 @@ void Game::InitialiseGame()
 
 	// 2: init food at random point, not snake point!
 	m_Food = GenerateFood();
-	// 3: init score = 0
-	// Already done by constructor!
+	// 3: (re)init score, game over and gamerunning
+	m_iScore = 0;
+	m_bGameRunning = false;
+	m_bGameOver = false;
 	// 4: set initialized to true to let the rest know we are ready
+
 	m_bInitialized = true;
 }
 

@@ -66,6 +66,15 @@ public:
 	//************************************
 	int GetScore() const { return m_iScore; }
 
+		//************************************
+	// Method:    IsGameOver
+	// FullName:  Game::IsGameOver
+	// Access:    private 
+	// Returns:   bool
+	// Qualifier: const
+	//************************************
+	bool IsGameOver() const { return m_bGameOver; }
+
 	//************************************
 	// Method:    SetDirection
 	// FullName:  Game::SetDirection
@@ -98,11 +107,11 @@ private:
 	//************************************
 	bool TestElementInSnake(const GridElement& ToTest) const;
 
-
 	int												m_iScore;
 	std::vector<GridElement>						m_vSnake;
 	GridElement										m_Food;
 	DIRECTION										m_eDirection;
 	bool											m_bInitialized;
 	bool											m_bGameRunning;
+	bool m_bGameOver;
 };

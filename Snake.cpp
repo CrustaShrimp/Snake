@@ -8,7 +8,7 @@
 #include <atlstr.h>
 
 #define MAX_LOADSTRING 100
-#define DRAWRATE 20
+#define DRAWRATE 50
 #define LINETHICKNESS 4
 // Global Variables:
 HINSTANCE hInst;                                // current instance
@@ -175,6 +175,14 @@ void DrawSnake(HWND hWnd, HDC hdc)
 	DeleteObject(hbrOrange);
 }
 
+void DrawGameOver(HWND hWnd, HDC hdc)
+{
+	RECT rcWindow;
+	GetClientRect(hWnd,&rcWindow);
+
+	DrawText(hdc, _T("GAME OVER"), -1, &rcWindow, DT_CENTER | DT_SINGLELINE);
+}
+
 //
 //  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
 //
@@ -265,7 +273,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			hpen = CreatePen(PS_SOLID, LINETHICKNESS, RGB(0, 0, 0));
 			SelectObject(hdc, hpen);
 			Rectangle(hdc, iStart - LINETHICKNESS/2, iStart - LINETHICKNESS/2, iEnd, iEnd);
-			DrawSnake(hWnd, hdc);
+			if (TheGame.IsGameOver())
+			{
+				DrawGameOver(hWnd,hdc);
+			}
+			else
+			{
+				DrawSnake(hWnd, hdc);
+			}
 			DeleteObject(hpen);
             EndPaint(hWnd, &ps);
         }

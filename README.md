@@ -6,5 +6,6 @@ v Score implementation
   Game over screen
   Start screen
   Difficulty selection (speed)
-
+  Highscore page and saving
+  Music
   Color scheme selector
