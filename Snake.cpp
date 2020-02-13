@@ -3,9 +3,12 @@
 
 #include "MainGame.h"
 #include "Snake.h"
+#include "resource.h"
 #include "framework.h"
 #include <algorithm>
 #include <atlstr.h>
+#include <windows.h>
+#include <mmsystem.h>
 
 #define MAX_LOADSTRING 100
 #define LINETHICKNESS 4
@@ -18,7 +21,7 @@ Game TheGame;									// Instance of the game
 
 DIFFICULTY g_eDifficulty = EASY;
 
-static int iStart = 20;
+static int iStart = 30;
 static int iEnd = iStart + TranslateGameToDisplay(GRIDSIZE);
 
 // Forward declarations of functions included in this code module:
@@ -27,6 +30,7 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    Startup(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK    GameOver(HWND, UINT, WPARAM, LPARAM);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -81,12 +85,12 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SNAKE));
+    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ROUNDSNAKE));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_BACKGROUND);
     wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_SNAKE);
     wcex.lpszClassName  = szWindowClass;
-    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_BLOCKSNAKE));
 
     return RegisterClassExW(&wcex);
 }
@@ -107,15 +111,12 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    DWORD dwStyle = (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU);
    g_hWnd = CreateWindowW(szWindowClass, szTitle, dwStyle,
-      0, 0, 460, 500, nullptr, nullptr, hInstance, nullptr);
+      0, 0, 480, 520, nullptr, nullptr, hInstance, nullptr);
 
    if (!g_hWnd)
    {
       return FALSE;
    }
-   // handle to main window 
-   // timer identifier 
-   // 10-second interval 
 
    SetTimer(g_hWnd, IDS_TIMER, g_eDifficulty, (TIMERPROC)NULL);     // no timer callback 
    ShowWindow(g_hWnd, nCmdShow);
@@ -140,6 +141,16 @@ void DrawGivenGEWithColor(const GridElement& GE, HDC hdc, const HBRUSH hbrBrush)
 	FillRect(hdc, &rPixel, hbrBrush);
 }
 
+CString GetScoreString()
+{
+	//Get score and make it into a string
+	// formatting example: 00005
+	const int iScore = TheGame.GetScore();
+	CString strScore;
+	strScore.Format(_T("%05d\0"), iScore);
+	return strScore;
+}
+
 void DrawSnake(HWND hWnd, HDC hdc)
 {
 	// Define the brushes
@@ -159,11 +170,7 @@ void DrawSnake(HWND hWnd, HDC hdc)
 	}
 
 	// Draw score:
-	//Get score and make it into a string
-	// formatting example: 00005
-	const int iScore = TheGame.GetScore();
-	CString strScore;
-	strScore.Format(_T("%05d\0"),iScore);
+	CString strScore = GetScoreString();
 	
 	// Determine window rect
 	RECT rcWindow;
@@ -311,6 +318,24 @@ HMENU hmenu = GetMenu(hWnd);
 				SetTimer(hWnd, IDS_TIMER, g_eDifficulty, (TIMERPROC)NULL);     // no timer callback 
 				break;
 			}
+			case IDM_OPTIONS_SOUND:
+			{
+				UINT state = GetMenuState(hmenu,IDM_OPTIONS_SOUND, MF_BYCOMMAND);
+				if (state == MF_UNCHECKED) // Go to enabled mode
+				{
+					TheGame.SetSoundEnabled(true);
+					// Play snakejazz when playing, not paused, not game over
+					PlaySnakeJazz(TheGame.IsPlaying());
+					CheckMenuItem(hmenu,   IDM_OPTIONS_SOUND, MF_CHECKED);
+				}
+				else if (state == MF_CHECKED) // Go to disabled mode
+				{
+					TheGame.SetSoundEnabled(false);
+					PlaySnakeJazz(false);
+					CheckMenuItem(hmenu,   IDM_OPTIONS_SOUND, MF_UNCHECKED);
+				}
+				break;
+			}
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
@@ -324,6 +349,10 @@ HMENU hmenu = GetMenu(hWnd);
         break;
 	case WM_TIMER:
 		TheGame.Play();
+		if(TheGame.IsGameOver())
+		{
+			DialogBox(hInst, MAKEINTRESOURCE(IDD_GAMEOVER), hWnd, GameOver);
+		}
 		InvalidateRect(hWnd, NULL, FALSE);
 		UpdateWindow(hWnd);
     case WM_PAINT:
@@ -335,11 +364,7 @@ HMENU hmenu = GetMenu(hWnd);
 			hpen = CreatePen(PS_SOLID, LINETHICKNESS, RGB(0, 0, 0));
 			SelectObject(hdc, hpen);
 			Rectangle(hdc, iStart - LINETHICKNESS/2, iStart - LINETHICKNESS/2, iEnd, iEnd);
-			if (TheGame.IsGameOver())
-			{
-				DrawGameOver(hWnd,hdc);
-			}
-			else
+			if (!TheGame.IsGameOver())
 			{
 				DrawSnake(hWnd, hdc);
 				if (TheGame.GetPaused())
@@ -367,8 +392,11 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_INITDIALOG:
+	{
+		HICON hIcon = LoadIcon(hInst, MAKEINTRESOURCE(IDI_BLOCKSNAKE));
+		SendMessage(hDlg, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
         return (INT_PTR)TRUE;
-
+	}
     case WM_COMMAND:
         if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
         {
@@ -390,10 +418,12 @@ INT_PTR CALLBACK Startup(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_INITDIALOG:
+	{
+		HICON hIcon = LoadIcon(hInst, MAKEINTRESOURCE(IDI_BLOCKSNAKE));
+		SendMessage(hDlg, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
 		CheckRadioButton(hDlg,IDC_SETEASY , IDC_SETHARD, IDC_SETEASY);
-		g_eDifficulty = EASY;
         return (INT_PTR)TRUE;
-
+	}
     case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
@@ -439,7 +469,46 @@ INT_PTR CALLBACK Startup(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     return (INT_PTR)FALSE;
 }
 
+INT_PTR CALLBACK GameOver(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(lParam);
+    switch (message)
+    {
+    case WM_INITDIALOG:
+	{
+		HICON hIcon = LoadIcon(hInst, MAKEINTRESOURCE(IDI_BLOCKSNAKE));
+		SendMessage(hDlg, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+		HWND hWndScoreTextBox = GetDlgItem(hDlg,IDC_SCORE);
+		CString strScore = GetScoreString();
+		SendMessage(hWndScoreTextBox, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)strScore);
+        return (INT_PTR) TRUE;
+		break;
+	}
+	case WM_COMMAND:
+        if (LOWORD(wParam) == IDRESTART)
+        {
+            EndDialog(hDlg, LOWORD(wParam));
+			DialogBox(hInst, MAKEINTRESOURCE(IDD_START), g_hWnd, Startup);
+            return (INT_PTR)TRUE;
+        }
+        break;
+	default:
+    return (INT_PTR)FALSE;
+	}
+	return (INT_PTR)FALSE;
+}
 
+void PlaySnakeJazz(const bool bPlay)
+{
+	if (bPlay && TheGame.GetSoundEnabled())
+	{
+		PlaySound(MAKEINTRESOURCE(IDA_SNAKEJAZZ),NULL,SND_ASYNC | SND_LOOP | SND_RESOURCE);
+	}
+	else
+	{
+		PlaySound(NULL,NULL,NULL);
+	}
+}
 
 IntPair TranslateGameToDisplay(const IntPair Coordinates)
 {

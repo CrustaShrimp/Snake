@@ -14,5 +14,14 @@ enum DIFFICULTY
 	HARD   = 50
 };
 
+//************************************
+// Method:    PlaySnakeJazz
+// FullName:  PlaySnakeJazz
+// Access:    public 
+// Returns:   void
+// Qualifier:
+// Parameter: const bool bPlay
+//************************************
+void PlaySnakeJazz(const bool bPlay);
 static int TranslateGameToDisplay(const int iGameSize) { return 8 * iGameSize; }
 static IntPair TranslateGameToDisplay(const IntPair Coordinates);

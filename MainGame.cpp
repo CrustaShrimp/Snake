@@ -12,6 +12,7 @@ Game::Game()
 	,m_bGameOver(false)
 	,m_bNewDirectionSet(false)
 	,m_bPaused(false)
+	,m_bSoundEnabled(true)
 {
 
 }
@@ -32,6 +33,10 @@ void Game::Play()
 		return;
 	}
 	if (m_bPaused)
+	{
+		return;
+	}
+	if (m_bGameOver)
 	{
 		return;
 	}
@@ -73,7 +78,6 @@ void Game::Play()
 	if (TestElementInSnake(NewSnakeHead))
 	{
 		// Game Over
-		m_bGameRunning = false;
 		m_bGameOver = true;
 		return;
 	}
@@ -102,8 +106,32 @@ void Game::Play()
 	// continues
 }
 
+bool Game::IsPlaying() const
+{
+	return m_bGameRunning && !m_bPaused && !m_bGameOver;
+}
+
+bool Game::IsGameOver()
+{
+	const bool bFirstTimeGameOver = m_bGameRunning && m_bGameOver;
+	if (bFirstTimeGameOver)
+	{
+		PlaySnakeJazz(false);
+	}
+	if (m_bGameOver)
+	{
+		m_bGameRunning = false;
+	}
+	return bFirstTimeGameOver;
+}
+
 void Game::SetDirection(const DIRECTION eDirection)
 {
+	if (!m_bGameRunning)
+	{
+		// We start playing now, or resume from pause
+		PlaySnakeJazz(true);
+	}
 	m_bGameRunning = true;
 	m_bPaused = false;
 	// Only set new direction if the direction has not already been changed without the game being called
@@ -132,6 +160,19 @@ void Game::SetDirection(const DIRECTION eDirection)
 			break;
 		}
 	}
+}
+
+void Game::TogglePause()
+{
+	if (!m_bPaused) // If we were not paused yet, we are going to pause and thus stop the music
+	{
+		PlaySnakeJazz(false);
+	}
+	else // If we were already paused, we are going to continue and thus restart the music
+	{
+		PlaySnakeJazz(true);
+	}
+	m_bPaused = !m_bPaused;
 }
 
 void Game::InitialiseGame()

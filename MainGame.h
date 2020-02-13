@@ -40,6 +40,15 @@ public:
 	//************************************
 	void Play();
 
+	//************************************
+	// Method:    IsPlaying
+	// FullName:  Game::IsPlaying
+	// Access:    public 
+	// Returns:   bool
+	// Qualifier: const
+	//************************************
+	bool IsPlaying() const;
+
 	// Method:    GetSnake
 	// FullName:  Game::GetSnake
 	// Access:    public 
@@ -71,9 +80,9 @@ public:
 	// FullName:  Game::IsGameOver
 	// Access:    private 
 	// Returns:   bool
-	// Qualifier: const
+	// Qualifier: 
 	//************************************
-	bool IsGameOver() const { return m_bGameOver; }
+	bool IsGameOver();
 
 	//************************************
 	// Method:    SetDirection
@@ -92,7 +101,7 @@ public:
 	// Returns:   void
 	// Qualifier:
 	//************************************
-	void TogglePause() { m_bPaused = !m_bPaused; }
+	void TogglePause();
 
 	//************************************
 	// Method:    GetRunning
@@ -102,6 +111,25 @@ public:
 	// Qualifier: const
 	//************************************
 	bool GetPaused() const { return m_bPaused; }
+
+	//************************************
+	// Method:    GetSoundEnabled
+	// FullName:  Game::GetSoundEnabled
+	// Access:    public 
+	// Returns:   bool
+	// Qualifier: const
+	//************************************
+	bool GetSoundEnabled() const { return m_bSoundEnabled; }
+
+	//************************************
+	// Method:    SetSoundEnabled
+	// FullName:  Game::SetSoundEnabled
+	// Access:    public 
+	// Returns:   void
+	// Qualifier:
+	// Parameter: const bool bEnabled
+	//************************************
+	void SetSoundEnabled(const bool bEnabled) { m_bSoundEnabled = bEnabled; }
 private:
 	//************************************
 	// Method:    GenerateFood
@@ -132,4 +160,5 @@ private:
 	bool											m_bPaused;
 	bool											m_bGameOver;
 	bool											m_bNewDirectionSet;
+	bool											m_bSoundEnabled;
 };
