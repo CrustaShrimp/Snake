@@ -22,7 +22,7 @@
 #define ID_DIFFICULTY_HARD              32777
 #define IDM_DIFFICULTY_EASY             32778
 #define IDM_DIFFICULTY_MEDIUM           32779
-#define IDM_DIFFICULTY_LEMONADE         32780
+#define IDM_DIFFICULTY_HARD             32780
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
