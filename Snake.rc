@@ -27,18 +27,6 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// Icon
-//
-
-// Icon with lowest ID value placed first to ensure application icon
-// remains consistent on all systems.
-IDI_SNAKE               ICON                    "Snake.ico"
-
-IDI_SMALL               ICON                    "small.ico"
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // Menu
 //
 
@@ -53,6 +41,8 @@ BEGIN
             MENUITEM "Lemonade",                    IDM_DIFFICULTY_MEDIUM
             MENUITEM "Difficult difficult lemon difficult", IDM_DIFFICULTY_HARD
         END
+        MENUITEM "Sound",                       IDM_OPTIONS_SOUND, CHECKED
+        MENUITEM SEPARATOR
         MENUITEM "E&xit",                       IDM_EXIT
     END
     POPUP "&Help"
@@ -79,15 +69,16 @@ END
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 170, 62
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_ABOUTBOX DIALOGEX 0, 0, 171, 63
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOPMOST
 CAPTION "About Snake"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
+    ICON            IDI_ROUNDSNAKE,IDC_STATIC,14,14,21,20
     LTEXT           "Snake, Version 1.0.2",IDC_STATIC,42,14,114,8,SS_NOPREFIX
     LTEXT           "Copyright (c) 2020",IDC_STATIC,42,34,114,8
-    DEFPUSHBUTTON   "OK",IDOK,113,41,50,14,WS_GROUP
+    DEFPUSHBUTTON   "OK",IDOK,114,42,50,14,WS_GROUP
     LTEXT           "Created by CrustaShrimp",IDC_STATIC,42,24,114,8,SS_NOPREFIX
 END
 
@@ -103,9 +94,9 @@ BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 163
+        RIGHTMARGIN, 164
         TOPMARGIN, 7
-        BOTTOMMARGIN, 55
+        BOTTOMMARGIN, 56
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -168,15 +159,15 @@ LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
 // Dialog
 //
 
-IDD_GAMEOVER DIALOGEX 0, 0, 309, 176
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_GAMEOVER DIALOGEX 0, 0, 248, 138
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Dialog"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
+FONT 10, "Microsoft Sans Serif", 400, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,129,155,50,14,BS_CENTER
-    CTEXT           "GAME OVER",IDC_GAMEOVER,122,55,63,13,SS_CENTERIMAGE
-    CTEXT           "Your score:",IDC_YOURSCORE,122,99,63,12,SS_CENTERIMAGE,WS_EX_TRANSPARENT
-    CTEXT           "00000",IDC_SCORE,122,118,63,12,SS_CENTERIMAGE | SS_SUNKEN,WS_EX_TRANSPARENT | WS_EX_STATICEDGE
+    DEFPUSHBUTTON   "RESTART",IDRESTART,99,117,50,14,BS_CENTER
+    CTEXT           "GAME OVER",IDC_GAMEOVER,93,55,63,13,SS_CENTERIMAGE
+    CTEXT           "Your score:",IDC_YOURSCORE,93,76,63,12,SS_CENTERIMAGE,WS_EX_TRANSPARENT
+    CTEXT           "00000",IDC_SCORE,93,87,63,12,SS_CENTERIMAGE | SS_SUNKEN,WS_EX_TRANSPARENT | WS_EX_STATICEDGE
 END
 
 IDD_START DIALOGEX 0, 0, 185, 102
@@ -188,8 +179,9 @@ BEGIN
     CONTROL         "Easy",IDC_SETEASY,"Button",BS_AUTORADIOBUTTON,7,42,31,10
     CONTROL         "Medium",IDC_SETMEDIUM,"Button",BS_AUTORADIOBUTTON,7,55,40,10
     CONTROL         "Hard",IDC_SETHARD,"Button",BS_AUTORADIOBUTTON,7,68,31,10
-    LTEXT           "Welcome to Snake!",IDC_STATIC,61,17,62,8
-    LTEXT           "Select a difficulty and press Start:",IDC_STATIC,38,30,110,8
+    LTEXT           "Welcome to Snake!",IDC_STATIC,62,7,61,8
+    LTEXT           "Select a difficulty and ",IDC_STATIC,7,22,72,8
+    LTEXT           "press Start:",IDC_STATIC,7,31,39,8
 END
 
 
@@ -204,10 +196,10 @@ BEGIN
     IDD_GAMEOVER, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 302
-        VERTGUIDE, 154
+        RIGHTMARGIN, 241
+        VERTGUIDE, 124
         TOPMARGIN, 7
-        BOTTOMMARGIN, 169
+        BOTTOMMARGIN, 131
     END
 
     IDD_START, DIALOG
@@ -220,6 +212,28 @@ BEGIN
     END
 END
 #endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_BWSNAKE             ICON                    "BlackSnake.ico"
+
+IDI_BLOCKSNAKE          ICON                    "BlockSnake.ico"
+
+IDI_ROUNDSNAKE          ICON                    "RoundSnake.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// WAVE
+//
+
+IDA_SNAKEJAZZ           WAVE                    "SNAKE.wav"
 
 #endif    // Dutch (Netherlands) resources
 /////////////////////////////////////////////////////////////////////////////

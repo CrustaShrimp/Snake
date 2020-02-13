@@ -60,5 +60,19 @@
     <Image Include="icon1.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="BlackSnake.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="BlockSnake.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="RoundSnake.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="SNAKE.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
   </ItemGroup>
 </Project>
