@@ -11,6 +11,7 @@ Game::Game()
 	,m_bGameRunning(false)
 	,m_bGameOver(false)
 	,m_bNewDirectionSet(false)
+	,m_bPaused(false)
 {
 
 }
@@ -22,12 +23,15 @@ Game::~Game()
 
 void Game::Play()
 {
-	assert(m_bInitialized);
 	if (!m_bInitialized)
 	{
 		return;
 	}
 	if (!m_bGameRunning)
+	{
+		return;
+	}
+	if (m_bPaused)
 	{
 		return;
 	}
@@ -101,6 +105,7 @@ void Game::Play()
 void Game::SetDirection(const DIRECTION eDirection)
 {
 	m_bGameRunning = true;
+	m_bPaused = false;
 	// Only set new direction if the direction has not already been changed without the game being called
 	if (!m_bNewDirectionSet)
 	{

@@ -85,7 +85,23 @@ public:
 	//************************************
 	void SetDirection(const DIRECTION eDirection);
 
+	//************************************
+	// Method:    TogglePause
+	// FullName:  Game::TogglePause
+	// Access:    public 
+	// Returns:   void
+	// Qualifier:
+	//************************************
+	void TogglePause() { m_bPaused = !m_bPaused; }
 
+	//************************************
+	// Method:    GetRunning
+	// FullName:  Game::GetRunning
+	// Access:    public 
+	// Returns:   bool
+	// Qualifier: const
+	//************************************
+	bool GetPaused() const { return m_bPaused; }
 private:
 	//************************************
 	// Method:    GenerateFood
@@ -113,6 +129,7 @@ private:
 	DIRECTION										m_eDirection;
 	bool											m_bInitialized;
 	bool											m_bGameRunning;
+	bool											m_bPaused;
 	bool											m_bGameOver;
 	bool											m_bNewDirectionSet;
 };

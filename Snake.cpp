@@ -11,6 +11,7 @@
 #define LINETHICKNESS 4
 // Global Variables:
 HINSTANCE hInst;                                // current instance
+HWND g_hWnd = NULL;
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 Game TheGame;									// Instance of the game
@@ -25,6 +26,7 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK    Startup(HWND, UINT, WPARAM, LPARAM);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -33,9 +35,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
-
-    // TODO: Place code here.
-	TheGame.InitialiseGame();
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -107,10 +106,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // Store instance handle in our global variable
 
    DWORD dwStyle = (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU);
-   HWND  hWnd = CreateWindowW(szWindowClass, szTitle, dwStyle,
+   g_hWnd = CreateWindowW(szWindowClass, szTitle, dwStyle,
       0, 0, 460, 500, nullptr, nullptr, hInstance, nullptr);
 
-   if (!hWnd)
+   if (!g_hWnd)
    {
       return FALSE;
    }
@@ -118,9 +117,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    // timer identifier 
    // 10-second interval 
 
-   SetTimer(hWnd, IDS_TIMER, g_eDifficulty, (TIMERPROC)NULL);     // no timer callback 
-   ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
+   SetTimer(g_hWnd, IDS_TIMER, g_eDifficulty, (TIMERPROC)NULL);     // no timer callback 
+   ShowWindow(g_hWnd, nCmdShow);
+   UpdateWindow(g_hWnd);
+   DialogBox(hInst, MAKEINTRESOURCE(IDD_START), g_hWnd, Startup);
    return TRUE;
 }
 
@@ -153,11 +153,14 @@ void DrawSnake(HWND hWnd, HDC hdc)
 
 	//Get the food point
 	const GridElement& GEFood = TheGame.GetFoodRef();
-	DrawGivenGEWithColor(GEFood,hdc,hbrOrange);
+	if (GEFood.GetActive())
+	{
+		DrawGivenGEWithColor(GEFood,hdc,hbrOrange);
+	}
 
 	// Draw score:
 	//Get score and make it into a string
-	// 00000
+	// formatting example: 00005
 	const int iScore = TheGame.GetScore();
 	CString strScore;
 	strScore.Format(_T("%05d\0"),iScore);
@@ -180,8 +183,27 @@ void DrawGameOver(HWND hWnd, HDC hdc)
 {
 	RECT rcWindow;
 	GetClientRect(hWnd,&rcWindow);
-
 	DrawText(hdc, _T("GAME OVER"), -1, &rcWindow, DT_CENTER | DT_SINGLELINE);
+}
+
+void DrawPause(HWND hWnd, HDC hdc)
+{
+	const HBRUSH hbrGrey  = CreateSolidBrush(RGB( 150, 150, 150));
+	// Get window rect
+	RECT rcWindow;
+	GetClientRect(hWnd,&rcWindow);
+	const int iMiddleLR = (rcWindow.right - rcWindow.left) / 2;
+	const int iMiddleUD = (rcWindow.bottom - rcWindow.top) / 2;
+	const int iOffset = 10;
+	const int iHeight = 50;
+	const int iWidth  = 20; 
+	RECT rcLeftBar;
+	SetRect(&rcLeftBar, iMiddleLR - iOffset - iWidth, iMiddleUD - iHeight, iMiddleLR - iOffset, iMiddleUD + iHeight);
+	RECT rcRightBar;
+	SetRect(&rcRightBar, iMiddleLR + iOffset, iMiddleUD - iHeight, iMiddleLR + iOffset + iWidth, iMiddleUD + iHeight);
+	
+	FillRect(hdc, &rcLeftBar, hbrGrey);
+	FillRect(hdc, &rcRightBar, hbrGrey);
 }
 
 //
@@ -231,13 +253,7 @@ HMENU hmenu = GetMenu(hWnd);
 		case VK_ESCAPE:
 
 			// Process the ESC key. 
-			// TODO
-			break;
-
-		case VK_RETURN:
-
-			// Process the RETURN/ENTER key. 
-			// TODO
+			TheGame.TogglePause();
 			break;
 
 			// Process other non-character keystrokes. 
@@ -253,7 +269,7 @@ HMENU hmenu = GetMenu(hWnd);
             {
 			case IDM_RESTART:
 			{
-				TheGame.InitialiseGame();
+				DialogBox(hInst, MAKEINTRESOURCE(IDD_START), hWnd, Startup);
 				break;
 			}
 			case IDM_DIFFICULTY_EASY:
@@ -314,7 +330,7 @@ HMENU hmenu = GetMenu(hWnd);
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
+            // Add any drawing code that uses hdc here...
 			HPEN hpen;
 			hpen = CreatePen(PS_SOLID, LINETHICKNESS, RGB(0, 0, 0));
 			SelectObject(hdc, hpen);
@@ -326,6 +342,10 @@ HMENU hmenu = GetMenu(hWnd);
 			else
 			{
 				DrawSnake(hWnd, hdc);
+				if (TheGame.GetPaused())
+				{
+					DrawPause(hWnd,hdc);
+				}
 			}
 			DeleteObject(hpen);
             EndPaint(hWnd, &ps);
@@ -359,6 +379,67 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     }
     return (INT_PTR)FALSE;
 }
+
+// Message handler for Startup box.
+INT_PTR CALLBACK Startup(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	// Get menu from main window:
+	HMENU hmenu = GetMenu(g_hWnd);
+
+	UNREFERENCED_PARAMETER(lParam);
+    switch (message)
+    {
+    case WM_INITDIALOG:
+		CheckRadioButton(hDlg,IDC_SETEASY , IDC_SETHARD, IDC_SETEASY);
+		g_eDifficulty = EASY;
+        return (INT_PTR)TRUE;
+
+    case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+			case IDC_SETEASY:
+				g_eDifficulty = EASY;
+			break;
+			
+			case IDC_SETMEDIUM:
+				g_eDifficulty = MEDIUM;
+			break;
+			
+			case IDC_SETHARD:
+				g_eDifficulty = HARD;
+			break;
+			
+			case IDSTART:
+				switch (g_eDifficulty)
+				{
+					case EASY:
+					CheckMenuItem(hmenu,   IDM_DIFFICULTY_EASY,   MF_CHECKED);
+					CheckMenuItem(hmenu, IDM_DIFFICULTY_MEDIUM, MF_UNCHECKED);
+					CheckMenuItem(hmenu,   IDM_DIFFICULTY_HARD, MF_UNCHECKED);
+					break;
+					case MEDIUM:
+					CheckMenuItem(hmenu,   IDM_DIFFICULTY_EASY, MF_UNCHECKED);
+					CheckMenuItem(hmenu, IDM_DIFFICULTY_MEDIUM,   MF_CHECKED);
+					CheckMenuItem(hmenu,   IDM_DIFFICULTY_HARD, MF_UNCHECKED);
+					break;
+					case HARD:
+					CheckMenuItem(hmenu,   IDM_DIFFICULTY_EASY, MF_UNCHECKED);
+					CheckMenuItem(hmenu, IDM_DIFFICULTY_MEDIUM, MF_UNCHECKED);
+					CheckMenuItem(hmenu,   IDM_DIFFICULTY_HARD,   MF_CHECKED);
+					break;
+
+				}
+				SetTimer(g_hWnd, IDS_TIMER, g_eDifficulty, (TIMERPROC)NULL);     // no timer callback 
+				EndDialog(hDlg, LOWORD(wParam));
+				TheGame.InitialiseGame();
+				return (INT_PTR)TRUE;
+			break;
+		}
+    }
+    return (INT_PTR)FALSE;
+}
+
+
 
 IntPair TranslateGameToDisplay(const IntPair Coordinates)
 {

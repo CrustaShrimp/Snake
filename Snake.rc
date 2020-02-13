@@ -84,10 +84,11 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "About Snake"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
-    LTEXT           "Snake, Version 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
-    LTEXT           "Copyright (c) 2020",IDC_STATIC,42,26,114,8
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
+    LTEXT           "Snake, Version 1.0.2",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Copyright (c) 2020",IDC_STATIC,42,34,114,8
     DEFPUSHBUTTON   "OK",IDOK,113,41,50,14,WS_GROUP
+    LTEXT           "Created by CrustaShrimp",IDC_STATIC,42,24,114,8,SS_NOPREFIX
 END
 
 
@@ -153,6 +154,74 @@ BEGIN
 END
 
 #endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Dutch (Netherlands) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NLD)
+LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_GAMEOVER DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,129,155,50,14,BS_CENTER
+    CTEXT           "GAME OVER",IDC_GAMEOVER,122,55,63,13,SS_CENTERIMAGE
+    CTEXT           "Your score:",IDC_YOURSCORE,122,99,63,12,SS_CENTERIMAGE,WS_EX_TRANSPARENT
+    CTEXT           "00000",IDC_SCORE,122,118,63,12,SS_CENTERIMAGE | SS_SUNKEN,WS_EX_TRANSPARENT | WS_EX_STATICEDGE
+END
+
+IDD_START DIALOGEX 0, 0, 185, 102
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "START",IDSTART,7,81,50,14
+    CONTROL         "Easy",IDC_SETEASY,"Button",BS_AUTORADIOBUTTON,7,42,31,10
+    CONTROL         "Medium",IDC_SETMEDIUM,"Button",BS_AUTORADIOBUTTON,7,55,40,10
+    CONTROL         "Hard",IDC_SETHARD,"Button",BS_AUTORADIOBUTTON,7,68,31,10
+    LTEXT           "Welcome to Snake!",IDC_STATIC,61,17,62,8
+    LTEXT           "Select a difficulty and press Start:",IDC_STATIC,38,30,110,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_GAMEOVER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        VERTGUIDE, 154
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 169
+    END
+
+    IDD_START, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 178
+        VERTGUIDE, 92
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 95
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // Dutch (Netherlands) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
