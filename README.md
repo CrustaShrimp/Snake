@@ -3,10 +3,11 @@ TODO's
 
 v Score implementation
 v Game over behaviour
-  Game over screen
-  Start screen
+v Game over screen
+v Start screen
 v Restart option
 v Difficulty selection (speed)
   Highscore page and saving
-  Music
+v Music
   Color scheme selector
+  Explanation page
