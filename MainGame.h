@@ -113,5 +113,6 @@ private:
 	DIRECTION										m_eDirection;
 	bool											m_bInitialized;
 	bool											m_bGameRunning;
-	bool m_bGameOver;
+	bool											m_bGameOver;
+	bool											m_bNewDirectionSet;
 };

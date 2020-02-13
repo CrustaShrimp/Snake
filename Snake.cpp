@@ -8,13 +8,14 @@
 #include <atlstr.h>
 
 #define MAX_LOADSTRING 100
-#define DRAWRATE 50
 #define LINETHICKNESS 4
 // Global Variables:
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 Game TheGame;									// Instance of the game
+
+DIFFICULTY g_eDifficulty = EASY;
 
 static int iStart = 20;
 static int iEnd = iStart + TranslateGameToDisplay(GRIDSIZE);
@@ -117,7 +118,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    // timer identifier 
    // 10-second interval 
 
-   SetTimer(hWnd, IDS_TIMER, DRAWRATE, (TIMERPROC)NULL);     // no timer callback 
+   SetTimer(hWnd, IDS_TIMER, g_eDifficulty, (TIMERPROC)NULL);     // no timer callback 
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
    return TRUE;
@@ -197,6 +198,7 @@ void DrawGameOver(HWND hWnd, HDC hdc)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+HMENU hmenu = GetMenu(hWnd);
     switch (message)
     {
 	case WM_KEYDOWN:
@@ -249,6 +251,45 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // Parse the menu selections:
             switch (wmId)
             {
+			case IDM_DIFFICULTY_EASY:
+			{
+				UINT state = GetMenuState(hmenu,IDM_DIFFICULTY_EASY, MF_BYCOMMAND);
+				if (state == MF_UNCHECKED)
+				{
+					g_eDifficulty = EASY;
+					CheckMenuItem(hmenu,   IDM_DIFFICULTY_EASY,   MF_CHECKED);
+					CheckMenuItem(hmenu, IDM_DIFFICULTY_MEDIUM, MF_UNCHECKED);
+					CheckMenuItem(hmenu,   IDM_DIFFICULTY_HARD, MF_UNCHECKED);
+				}
+				SetTimer(hWnd, IDS_TIMER, g_eDifficulty, (TIMERPROC)NULL);     // no timer callback 
+				break;
+			}
+			case IDM_DIFFICULTY_MEDIUM:
+			{
+				UINT state = GetMenuState(hmenu,IDM_DIFFICULTY_MEDIUM, MF_BYCOMMAND);
+				if (state == MF_UNCHECKED)
+				{
+					g_eDifficulty = MEDIUM;
+					CheckMenuItem(hmenu,   IDM_DIFFICULTY_EASY, MF_UNCHECKED);
+					CheckMenuItem(hmenu, IDM_DIFFICULTY_MEDIUM,   MF_CHECKED);
+					CheckMenuItem(hmenu,   IDM_DIFFICULTY_HARD, MF_UNCHECKED);
+				}
+				SetTimer(hWnd, IDS_TIMER, g_eDifficulty, (TIMERPROC)NULL);     // no timer callback 
+				break;
+			}
+			case IDM_DIFFICULTY_HARD:
+			{
+				UINT state = GetMenuState(hmenu,IDM_DIFFICULTY_HARD, MF_BYCOMMAND);
+				if (state == MF_UNCHECKED)
+				{
+					g_eDifficulty = HARD;
+					CheckMenuItem(hmenu,   IDM_DIFFICULTY_EASY, MF_UNCHECKED);
+					CheckMenuItem(hmenu, IDM_DIFFICULTY_MEDIUM, MF_UNCHECKED);
+					CheckMenuItem(hmenu,   IDM_DIFFICULTY_HARD,   MF_CHECKED);
+				}
+				SetTimer(hWnd, IDS_TIMER, g_eDifficulty, (TIMERPROC)NULL);     // no timer callback 
+				break;
+			}
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
