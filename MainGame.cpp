@@ -1,5 +1,6 @@
 #include "MainGame.h"
 #include "Snake.h"
+#include <ctime>
 #include <cstdlib>
 #include <cassert>
 #include <numeric>
@@ -179,6 +180,9 @@ void Game::InitialiseGame()
 {
 	// *************************************************
 	// Init:
+    #ifndef _DEBUG
+    std::srand(std::time(nullptr));
+    #endif
 	// 1: init snake at some point
 	m_vSnake.clear();
 	const int iMiddle = (GRIDSIZE - 1) / 2;
@@ -192,7 +196,6 @@ void Game::InitialiseGame()
 	m_bGameRunning = false;
 	m_bGameOver = false;
 	// 4: set initialized to true to let the rest know we are ready
-
 	m_bInitialized = true;
 }
 
@@ -200,7 +203,6 @@ GridElement Game::GenerateFood() const
 {
 	// Generate a food item somewhere
 	// It cannot be in the snake set!
-	// TODO set random seed
 	bool bFoodLocationVerified = false;
 	int iTries = 0;
 	while (!bFoodLocationVerified && iTries < 50)
