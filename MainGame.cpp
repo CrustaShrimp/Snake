@@ -10,6 +10,7 @@ Game::Game()
 	,m_bInitialized(false)
 	,m_bGameRunning(false)
 	,m_bGameOver(false)
+	,m_bNewDirectionSet(false)
 {
 
 }
@@ -33,7 +34,7 @@ void Game::Play()
 	// *************************************************
 	// Play game:
 	// 1: read direction (done in SetDirection())
-
+	m_bNewDirectionSet = false;
 	// 2: move snake in direction
 	GridElement NewSnakeHead = *(m_vSnake.cbegin());
 	switch (m_eDirection)
@@ -100,26 +101,31 @@ void Game::Play()
 void Game::SetDirection(const DIRECTION eDirection)
 {
 	m_bGameRunning = true;
-	assert(eDirection != DIRECTION::UNDEFINED);
-	switch (eDirection)
+	// Only set new direction if the direction has not already been changed without the game being called
+	if (!m_bNewDirectionSet)
 	{
-	case DIRECTION::LEFT: // Fall through
-	case DIRECTION::RIGHT:
-		if (m_eDirection == DIRECTION::UNDEFINED || m_eDirection == DIRECTION::UP || m_eDirection == DIRECTION::DOWN)
+		m_bNewDirectionSet = true;
+		assert(eDirection != DIRECTION::UNDEFINED);
+		switch (eDirection)
 		{
-			m_eDirection = eDirection;
+		case DIRECTION::LEFT: // Fall through
+		case DIRECTION::RIGHT:
+			if (m_eDirection == DIRECTION::UNDEFINED || m_eDirection == DIRECTION::UP || m_eDirection == DIRECTION::DOWN)
+			{
+				m_eDirection = eDirection;
+			}
+			break;
+		case DIRECTION::UP: // Fall through
+		case DIRECTION::DOWN:
+			if (m_eDirection == DIRECTION::UNDEFINED || m_eDirection == DIRECTION::LEFT || m_eDirection == DIRECTION::RIGHT)
+			{
+				m_eDirection = eDirection;
+			}
+			break;
+		default:
+			assert(false);
+			break;
 		}
-		break;
-	case DIRECTION::UP: // Fall through
-	case DIRECTION::DOWN:
-		if (m_eDirection == DIRECTION::UNDEFINED || m_eDirection == DIRECTION::LEFT || m_eDirection == DIRECTION::RIGHT)
-		{
-			m_eDirection = eDirection;
-		}
-		break;
-	default:
-		assert(false);
-		break;
 	}
 }
 
