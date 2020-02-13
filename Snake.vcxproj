@@ -173,7 +173,6 @@
   <ItemGroup>
     <Image Include="BlackSnake.ico" />
     <Image Include="BlockSnake.ico" />
-    <Image Include="icon1.ico" />
     <Image Include="RoundSnake.ico" />
     <Image Include="small.ico" />
     <Image Include="Snake.ico" />
