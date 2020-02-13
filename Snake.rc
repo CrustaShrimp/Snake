@@ -221,11 +221,11 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_BWSNAKE             ICON                    "BlackSnake.ico"
+IDI_ROUNDSNAKE          ICON                    "RoundSnake.ico"
 
 IDI_BLOCKSNAKE          ICON                    "BlockSnake.ico"
 
-IDI_ROUNDSNAKE          ICON                    "RoundSnake.ico"
+IDI_BWSNAKE             ICON                    "BlackSnake.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////

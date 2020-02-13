@@ -12,9 +12,9 @@
 #define IDR_MAINFRAME                   128
 #define IDD_GAMEOVER                    129
 #define IDD_START                       132
-#define IDI_BWSNAKE                     134
+#define IDI_ROUNDSNAKE                  134
 #define IDI_BLOCKSNAKE                  135
-#define IDI_ROUNDSNAKE                  136
+#define IDI_BWSNAKE                     136
 #define IDA_SNAKE                       137
 #define IDA_SNAKEJAZZ                   137
 #define IDS_TIMER                       543
