@@ -328,7 +328,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         case VK_ESCAPE:
 
             // Process the ESC key. 
-            TheGame.TogglePause();
+            TheGame.TogglePause(false);
             break;
 
             // Process other non-character keystrokes. 
@@ -462,6 +462,7 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_INITDIALOG:
     {
+        TheGame.TogglePause(true);
         HICON hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_BLOCKSNAKE));
         SendMessage(hDlg, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
         return (INT_PTR)TRUE;
@@ -485,6 +486,7 @@ INT_PTR CALLBACK Startup(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_INITDIALOG:
     {
+        TheGame.TogglePause(true);
         HICON hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_BLOCKSNAKE));
         SendMessage(hDlg, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
         CheckRadioButton(hDlg,IDC_SETEASY , IDC_SETHARD, IDC_SETEASY);

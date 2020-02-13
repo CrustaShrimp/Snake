@@ -100,8 +100,9 @@ public:
 	// Access:    public 
 	// Returns:   void
 	// Qualifier:
+	// Parameter: const bool bForcedPause
 	//************************************
-	void TogglePause();
+	void TogglePause(const bool bForcedPause);
 
 	//************************************
 	// Method:    GetRunning

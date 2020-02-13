@@ -163,17 +163,25 @@ void Game::SetDirection(const DIRECTION eDirection)
 	}
 }
 
-void Game::TogglePause()
+void Game::TogglePause(const bool bForcedPause)
 {
-	if (!m_bPaused) // If we were not paused yet, we are going to pause and thus stop the music
-	{
-		PlaySnakeJazz(false);
-	}
-	else // If we were already paused, we are going to continue and thus restart the music
-	{
-		PlaySnakeJazz(true);
-	}
-	m_bPaused = !m_bPaused;
+    if (bForcedPause)
+    {
+        PlaySnakeJazz(false);
+        m_bPaused = true;
+    }
+    else
+    {
+        if (!m_bPaused) // If we were not paused yet, we are going to pause and thus stop the music
+        {
+            PlaySnakeJazz(false);
+        }
+        else // If we were already paused, we are going to continue and thus restart the music
+        {
+            PlaySnakeJazz(true);
+        }
+        m_bPaused = !m_bPaused;
+    }
 }
 
 void Game::InitialiseGame()
