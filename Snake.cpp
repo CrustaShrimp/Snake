@@ -251,6 +251,11 @@ HMENU hmenu = GetMenu(hWnd);
             // Parse the menu selections:
             switch (wmId)
             {
+			case IDM_RESTART:
+			{
+				TheGame.InitialiseGame();
+				break;
+			}
 			case IDM_DIFFICULTY_EASY:
 			{
 				UINT state = GetMenuState(hmenu,IDM_DIFFICULTY_EASY, MF_BYCOMMAND);

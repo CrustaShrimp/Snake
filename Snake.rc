@@ -1,5 +1,7 @@
 // Microsoft Visual C++ generated resource script.
 //
+#pragma code_page(65001)
+
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -22,7 +24,6 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
-#pragma code_page(1252)
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -43,12 +44,13 @@ IDI_SMALL               ICON                    "small.ico"
 
 IDC_SNAKE MENU
 BEGIN
-    POPUP "&File"
+    POPUP "&Options"
     BEGIN
+        MENUITEM "New game",                    IDM_RESTART
         POPUP "Difficulty"
         BEGIN
-            MENUITEM "Easy peasy lemon squeezy",			IDM_DIFFICULTY_EASY, CHECKED
-            MENUITEM "Lemonade",							IDM_DIFFICULTY_MEDIUM
+            MENUITEM "Easy peasy lemon squeezy",    IDM_DIFFICULTY_EASY, CHECKED
+            MENUITEM "Lemonade",                    IDM_DIFFICULTY_MEDIUM
             MENUITEM "Difficult difficult lemon difficult", IDM_DIFFICULTY_HARD
         END
         MENUITEM "E&xit",                       IDM_EXIT

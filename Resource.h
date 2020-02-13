@@ -23,6 +23,8 @@
 #define IDM_DIFFICULTY_EASY             32778
 #define IDM_DIFFICULTY_MEDIUM           32779
 #define IDM_DIFFICULTY_HARD             32780
+#define ID_OPTIONS_RESTARTGAME          32781
+#define IDM_RESTART                     32782
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -31,7 +33,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        129
-#define _APS_NEXT_COMMAND_VALUE         32781
+#define _APS_NEXT_COMMAND_VALUE         32783
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           110
 #endif

@@ -134,6 +134,7 @@ void Game::InitialiseGame()
 	// *************************************************
 	// Init:
 	// 1: init snake at some point
+	m_vSnake.clear();
 	const int iMiddle = (GRIDSIZE - 1) / 2;
 	const GridElement SnakeBeginPoint(iMiddle, iMiddle);
 	m_vSnake.push_back(SnakeBeginPoint);
