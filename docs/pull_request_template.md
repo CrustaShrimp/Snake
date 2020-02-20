@@ -1,5 +1,10 @@
-Hello, 
-I have been working on your project simultaneously and have a proposal for an upgrade!
-Would you consider these changes?
 
-Thank you!
+### General
+I have made changes regarding some issue(s).
+
+**Enter issue number(s) here**:
+
+
+I have:
+- [ ] Added a new feature
+- [ ] Fixed a bug
