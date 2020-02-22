@@ -282,6 +282,36 @@ void DrawPause(HWND hWnd, HDC hdc)
     FillRect(hdc, &rcRightBar, hbrGrey);
 }
 
+//************************************
+// Toggles the music (Snake Jazz)
+// Should be called when mute button pressed
+// or when the sound menu option is toggled
+// Method:    ToggleSound
+// FullName:  ToggleSound
+// Access:    public 
+// Returns:   void
+// Qualifier:
+// Parameter: HWND hWnd
+//************************************
+void ToggleSound(HWND hWnd)
+{
+    HMENU hmenu = GetMenu(hWnd);
+    UINT state = GetMenuState(hmenu, IDM_OPTIONS_SOUND, MF_BYCOMMAND);
+    if (state == MF_UNCHECKED) // Go to enabled mode
+    {
+        TheGame.SetSoundEnabled(true);
+        // Play snakejazz when playing, not paused, not game over
+        PlaySnakeJazz(TheGame.IsPlaying());
+        CheckMenuItem(hmenu, IDM_OPTIONS_SOUND, MF_CHECKED);
+    }
+    else if (state == MF_CHECKED) // Go to disabled mode
+    {
+        TheGame.SetSoundEnabled(false);
+        PlaySnakeJazz(false);
+        CheckMenuItem(hmenu, IDM_OPTIONS_SOUND, MF_UNCHECKED);
+    }
+}
+
 //
 //  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
 //
@@ -331,6 +361,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             TheGame.TogglePause(false);
             break;
 
+        case 0x4D: // "M" key
+        {
+            // Process the M key
+            const bool bSoundEnabled = TheGame.GetSoundEnabled();
+            ToggleSound(hWnd);
+
+            break;
+        }
             // Process other non-character keystrokes. 
         default:
             return -1;
@@ -389,20 +427,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
             case IDM_OPTIONS_SOUND:
             {
-                UINT state = GetMenuState(hmenu,IDM_OPTIONS_SOUND, MF_BYCOMMAND);
-                if (state == MF_UNCHECKED) // Go to enabled mode
-                {
-                    TheGame.SetSoundEnabled(true);
-                    // Play snakejazz when playing, not paused, not game over
-                    PlaySnakeJazz(TheGame.IsPlaying());
-                    CheckMenuItem(hmenu,   IDM_OPTIONS_SOUND, MF_CHECKED);
-                }
-                else if (state == MF_CHECKED) // Go to disabled mode
-                {
-                    TheGame.SetSoundEnabled(false);
-                    PlaySnakeJazz(false);
-                    CheckMenuItem(hmenu,   IDM_OPTIONS_SOUND, MF_UNCHECKED);
-                }
+                ToggleSound(hWnd);
                 break;
             }
             case IDM_ABOUT:
