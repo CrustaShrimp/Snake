@@ -2,7 +2,7 @@
 name: Feature request
 about: Suggest an idea for this project
 title: "[FR]"
-labels: Triage requested, enhancement
+labels: FR, Triage requested
 assignees: CrustaShrimp
 
 ---
