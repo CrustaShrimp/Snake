@@ -33,7 +33,11 @@ This project and everyone participating in it is governed by the [Snake Code of 
 
 ## TL;DR
 
-> **Note:** Feel free to ask questions as an [issue](https://github.com/CrustaShrimp/Snake/issues) (There is even a template).
+**Note:** Feel free to ask questions as an [issue](https://github.com/CrustaShrimp/Snake/issues) (there is even a template), report bugs or send feature requests. Pull requests are also often checked, but they should be linked to an [issue](https://github.com/CrustaShrimp/Snake/issues).
+
+### Contribute by:
+- Downloading the latest release and playing it.
+- Making Pull Requests to change the codebase. 
 
 ## What should I know before I get started?
 
@@ -60,6 +64,13 @@ Apart from the basics, some extra features can be added:
 When we make a significant decision in how we maintain the project and what we can or cannot support, we will document it in the [DesignChoices](DesignChoices.md). If you have a question around how we do things, check to see if it is documented there. If it is *not* documented there, please open a new question on [issues](https://github.com/CrustaShrimp/Snake/issues)
 
 ## How Can I Contribute?
+
+There are a couple of different ways to contribute to Snake:
+- **Downloading the latest release and playing it.** 
+By playing Snake, you can not only have fun and try to beat the highscore, but also encounter bugs or annoyances.
+If you do, please feel free to submit a bugreport or feature request here [issues](https://github.com/CrustaShrimp/Snake/issues), so the game can be improved. Basically, every player is also a beta-tester!
+- **Making Pull Requests to change the codebase.** 
+This is the more traditional view on contributing, although [issues](https://github.com/CrustaShrimp/Snake/issues) can only be solved bugs and feature requests are found and reported!
 
 ### Reporting Bugs
 
