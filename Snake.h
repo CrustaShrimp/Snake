@@ -1,5 +1,5 @@
 #pragma once
-
+#include <afxwin.h>         // CButton, CString
 #include "resource.h"
 #include <utility>
 #define GRIDSIZE 50

@@ -7,7 +7,6 @@
 #include "framework.h"
 #include <cassert>          // assert
 #include <algorithm>        // std::for_each
-#include <atlstr.h>         // CString
 #include <mmsystem.h>       // PlaySound()
 
 #define MAX_LOADSTRING 100
@@ -292,19 +291,19 @@ void DrawPause(HWND hWnd, HDC hdc)
 // Returns:   void
 // Qualifier:
 // Parameter: HWND hWnd
+// Parameter: const bool bEnable
 //************************************
-void ToggleSound(HWND hWnd)
+void ToggleSound(const HWND& hWnd, const bool bEnable)
 {
     HMENU hmenu = GetMenu(hWnd);
-    UINT state = GetMenuState(hmenu, IDM_OPTIONS_SOUND, MF_BYCOMMAND);
-    if (state == MF_UNCHECKED) // Go to enabled mode
+    if (bEnable) // Go to enabled mode
     {
         TheGame.SetSoundEnabled(true);
         // Play snakejazz when playing, not paused, not game over
         PlaySnakeJazz(TheGame.IsPlaying());
         CheckMenuItem(hmenu, IDM_OPTIONS_SOUND, MF_CHECKED);
     }
-    else if (state == MF_CHECKED) // Go to disabled mode
+    else // Go to disabled mode
     {
         TheGame.SetSoundEnabled(false);
         PlaySnakeJazz(false);
@@ -365,8 +364,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             // Process the M key
             const bool bSoundEnabled = TheGame.GetSoundEnabled();
-            ToggleSound(hWnd);
-
+            ToggleSound(hWnd, bSoundEnabled);
             break;
         }
             // Process other non-character keystrokes. 
@@ -427,7 +425,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
             case IDM_OPTIONS_SOUND:
             {
-                ToggleSound(hWnd);
+                const UINT uiState = GetMenuState(hmenu, IDM_OPTIONS_SOUND, MF_BYCOMMAND);
+                const bool bEnable = uiState == MF_CHECKED;
+                ToggleSound(hWnd, bEnable);
                 break;
             }
             case IDM_ABOUT:
@@ -515,6 +515,7 @@ INT_PTR CALLBACK Startup(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         TheGame.TogglePause(true);
         HICON hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_BLOCKSNAKE));
         SendMessage(hDlg, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+        CheckDlgButton(hDlg,IDC_SOUND,TRUE);
         CheckRadioButton(hDlg,IDC_SETEASY , IDC_SETHARD, IDC_SETEASY);
         return (INT_PTR)TRUE;
     }
@@ -555,6 +556,9 @@ INT_PTR CALLBACK Startup(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                         CheckMenuItem(hmenu,   IDM_DIFFICULTY_HARD,   MF_CHECKED);
                         break;
                 }
+                UINT SoundEnabled = IsDlgButtonChecked(hDlg,IDC_SOUND);
+                const bool bSoundEnabled = SoundEnabled;
+                ToggleSound(hDlg,bSoundEnabled);
                 SetTimer(g_hWnd, IDS_TIMER, (int)g_eDifficulty, (TIMERPROC)NULL);     // no timer callback 
                 EndDialog(hDlg, LOWORD(wParam));
                 TheGame.InitialiseGame();

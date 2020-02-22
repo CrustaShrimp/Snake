@@ -75,11 +75,11 @@ EXSTYLE WS_EX_TOPMOST
 CAPTION "About Snake"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    ICON            IDI_ROUNDSNAKE,IDC_STATIC,14,14,21,20
-    LTEXT           "Snake, Version 1.0.2",IDC_STATIC,42,14,114,8,SS_NOPREFIX
-    LTEXT           "Copyright (c) 2020",IDC_STATIC,42,34,114,8
+    ICON            IDI_ROUNDSNAKE,IDI_ICONRS,14,14,21,20
+    LTEXT           "Snake, Version 1.0.2",IDC_STATICABOUT1,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Copyright (c) 2020",IDC_STATICABOUT3,42,34,114,8
     DEFPUSHBUTTON   "OK",IDOK,114,42,50,14,WS_GROUP
-    LTEXT           "Created by CrustaShrimp",IDC_STATIC,42,24,114,8,SS_NOPREFIX
+    LTEXT           "Created by CrustaShrimp",IDC_STATICABOUT2,42,24,114,8,SS_NOPREFIX
 END
 
 
@@ -179,9 +179,10 @@ BEGIN
     CONTROL         "Easy",IDC_SETEASY,"Button",BS_AUTORADIOBUTTON,7,42,31,10
     CONTROL         "Medium",IDC_SETMEDIUM,"Button",BS_AUTORADIOBUTTON,7,55,40,10
     CONTROL         "Hard",IDC_SETHARD,"Button",BS_AUTORADIOBUTTON,7,68,31,10
-    LTEXT           "Welcome to Snake!",IDC_STATIC,62,7,61,8
-    LTEXT           "Select a difficulty and ",IDC_STATIC,7,22,72,8
-    LTEXT           "press Start:",IDC_STATIC,7,31,39,8
+    LTEXT           "Welcome to Snake!",IDC_STATICSTART1,62,7,61,8
+    LTEXT           "Select a difficulty and ",IDC_STATICSTART2,7,22,72,8
+    LTEXT           "press Start:",IDC_STATICSTART3,7,31,39,8
+    CONTROL         "Sound Enabled",IDC_SOUND,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,101,42,63,10
 END
 
 
@@ -209,6 +210,7 @@ BEGIN
         VERTGUIDE, 92
         TOPMARGIN, 7
         BOTTOMMARGIN, 95
+        HORZGUIDE, 47
     END
 END
 #endif    // APSTUDIO_INVOKED
