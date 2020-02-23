@@ -2,10 +2,11 @@
 name: Question
 about: Ask a question about this project
 title: "[Question]"
-labels: question
+labels: Question
 assignees: CrustaShrimp
 
 ---
+
 **Describe the question you have**
 A clear and concise description of what you want to know.
 
