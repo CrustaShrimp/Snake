@@ -26,13 +26,21 @@
 #define IDC_SETHARD                     1005
 #define IDSTART                         1007
 #define IDRESTART                       1008
+#define IDC_SOUND                       1009
+#define IDC_STATICSTART2                1010
+#define IDC_STATICTEXT3                 1011
+#define IDC_STATICSTART3                1011
+#define IDC_STATICSTART1                1012
+#define IDC_STATICABOUT1                1013
+#define IDC_STATICABOUT2                1014
+#define IDC_STATICABOUT3                1015
 #define IDM_DIFFICULTY_EASY             32778
 #define IDM_DIFFICULTY_MEDIUM           32779
 #define IDM_DIFFICULTY_HARD             32780
 #define IDM_RESTART                     32782
 #define ID_OPTIONS_SOUND                32783
 #define IDM_OPTIONS_SOUND               32784
-#define IDC_STATIC                      -1
+#define IDI_ICONRS                      -1
 
 // Next default values for new objects
 // 
@@ -41,7 +49,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        138
 #define _APS_NEXT_COMMAND_VALUE         32785
-#define _APS_NEXT_CONTROL_VALUE         1009
+#define _APS_NEXT_CONTROL_VALUE         1016
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif
