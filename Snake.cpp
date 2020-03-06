@@ -513,10 +513,28 @@ INT_PTR CALLBACK Startup(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_INITDIALOG:
     {
         TheGame.TogglePause(true);
+        const BOOL SoundEnabled = TheGame.GetSoundEnabled();
+        UINT DefaultDifficulty = IDC_SETEASY;
+        switch (g_eDifficulty)
+        {
+        case DIFFICULTY::UNINIT:
+        case DIFFICULTY::EASY:
+            DefaultDifficulty = IDC_SETEASY;
+            break;
+        case DIFFICULTY::MEDIUM:
+            DefaultDifficulty = IDC_SETMEDIUM;
+            break;
+        case DIFFICULTY::HARD:
+            DefaultDifficulty = IDC_SETHARD;
+            break;
+        default:
+            break;
+        }
+         
         HICON hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_BLOCKSNAKE));
         SendMessage(hDlg, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
-        CheckDlgButton(hDlg,IDC_SOUND,TRUE);
-        CheckRadioButton(hDlg,IDC_SETEASY , IDC_SETHARD, IDC_SETEASY);
+        CheckDlgButton(hDlg,IDC_SOUND,SoundEnabled);
+        CheckRadioButton(hDlg,IDC_SETEASY , IDC_SETHARD, DefaultDifficulty);
         return (INT_PTR)TRUE;
     }
     case WM_COMMAND:
