@@ -189,7 +189,8 @@ void Game::InitialiseGame()
 	// *************************************************
 	// Init:
     #ifndef _DEBUG
-    std::srand(std::time(nullptr));
+	const unsigned int iRandomInitiator = static_cast<unsigned int>(std::time(nullptr));
+    std::srand(iRandomInitiator);
     #endif
 	// 1: init snake at some point
 	m_vSnake.clear();
