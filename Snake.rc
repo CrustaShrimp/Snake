@@ -34,19 +34,20 @@ IDC_SNAKE MENU
 BEGIN
     POPUP "&Options"
     BEGIN
-        MENUITEM "New game",                    IDM_RESTART
-        POPUP "Difficulty"
+        MENUITEM "&New game",                   IDM_RESTART
+        POPUP "&Difficulty"
         BEGIN
-            MENUITEM "Easy peasy lemon squeezy",    IDM_DIFFICULTY_EASY, CHECKED
-            MENUITEM "Lemonade",                    IDM_DIFFICULTY_MEDIUM
-            MENUITEM "Difficult difficult lemon difficult", IDM_DIFFICULTY_HARD
+            MENUITEM "&Easy peasy lemon squeezy",   IDM_DIFFICULTY_EASY, CHECKED
+            MENUITEM "&Lemonade",                   IDM_DIFFICULTY_MEDIUM
+            MENUITEM "Di&fficult difficult lemon difficult", IDM_DIFFICULTY_HARD
         END
-        MENUITEM "Sound",                       IDM_OPTIONS_SOUND, CHECKED
+        MENUITEM "&Sound",                      IDM_OPTIONS_SOUND, CHECKED
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       IDM_EXIT
     END
-    POPUP "&Help"
+    POPUP "&Info"
     BEGIN
+        MENUITEM "&Help ...",                   IDM_HELP
         MENUITEM "&About ...",                  IDM_ABOUT
     END
 END
@@ -183,6 +184,18 @@ BEGIN
     LTEXT           "Select a difficulty and ",IDC_STATICSTART2,7,22,72,8
     LTEXT           "press Start:",IDC_STATICSTART3,7,31,39,8
     CONTROL         "Sound Enabled",IDC_SOUND,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,101,42,63,10
+    DEFPUSHBUTTON   "Help",IDHELP,128,81,50,14
+END
+
+IDD_HELP DIALOGEX 0, 0, 175, 126
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 14, "Roboto Slab", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "Close",IDCLS,125,106,43,11
+    LTEXT           "Controls:\r\nArrow Keys\tMovement\r\nM key\t\tEn/disable sound",IDC_STATICINFO2,7,69,113,25
+    LTEXT           "Goals:",IDC_STATICINFO1,7,7,21,8
+    LTEXT           "Eat as much food as possible without hitting yourself.\r\nEvery food element earns you 5 points!\r\nYou can move through walls.\r\n\nGood Luck!",IDC_STATICINFO3,7,14,161,48
 END
 
 
@@ -211,6 +224,15 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 95
         HORZGUIDE, 47
+    END
+
+    IDD_HELP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 168
+        VERTGUIDE, 87
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 119
     END
 END
 #endif    // APSTUDIO_INVOKED

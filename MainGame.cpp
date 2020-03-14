@@ -107,6 +107,11 @@ void Game::Play()
 	// continues
 }
 
+bool Game::AllowedToUnpause() const
+{
+	return m_bGameRunning && m_bPaused && !m_bGameOver;
+}
+
 bool Game::IsPlaying() const
 {
 	return m_bGameRunning && !m_bPaused && !m_bGameOver;
