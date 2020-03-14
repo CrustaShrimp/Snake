@@ -17,6 +17,8 @@
 #define IDI_BWSNAKE                     136
 #define IDA_SNAKE                       137
 #define IDA_SNAKEJAZZ                   137
+#define IDD_HELP                        138
+#define IDI_ICON1                       142
 #define IDS_TIMER                       543
 #define IDC_GAMEOVER                    1001
 #define IDC_YOURSCORE                   1002
@@ -34,22 +36,28 @@
 #define IDC_STATICABOUT1                1013
 #define IDC_STATICABOUT2                1014
 #define IDC_STATICABOUT3                1015
+#define IDCLS                           1017
+#define IDC_STATICINFO2                 1019
+#define IDC_STATICINFO3                 1020
 #define IDM_DIFFICULTY_EASY             32778
 #define IDM_DIFFICULTY_MEDIUM           32779
 #define IDM_DIFFICULTY_HARD             32780
 #define IDM_RESTART                     32782
 #define ID_OPTIONS_SOUND                32783
 #define IDM_OPTIONS_SOUND               32784
+#define ID_HELP_HELP                    32785
+#define IDM_HELP                        32786
 #define IDI_ICONRS                      -1
+#define IDC_STATICINFO1                 -1
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        138
-#define _APS_NEXT_COMMAND_VALUE         32785
-#define _APS_NEXT_CONTROL_VALUE         1016
+#define _APS_NEXT_RESOURCE_VALUE        143
+#define _APS_NEXT_COMMAND_VALUE         32787
+#define _APS_NEXT_CONTROL_VALUE         1022
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

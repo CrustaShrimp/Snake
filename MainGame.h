@@ -30,6 +30,14 @@ public:
 	//************************************
 	void InitialiseGame();
 
+	//************************************
+	// Method:    SetGameNotPlaying
+	// FullName:  Game::SetGameNotPlaying
+	// Access:    public 
+	// Returns:   void
+	// Qualifier:
+	//************************************
+	void SetGameNotPlaying() { m_bGameRunning = false; }
 
 	//************************************
 	// Method:    Play
@@ -41,6 +49,15 @@ public:
 	void Play();
 
 	//************************************
+	// Method:    AllowedToUnpause
+	// FullName:  Game::AllowedToUnpause
+	// Access:    public 
+	// Returns:   bool
+	// Qualifier: const
+	//************************************
+	bool AllowedToUnpause() const;
+
+	//************************************
 	// Method:    IsPlaying
 	// FullName:  Game::IsPlaying
 	// Access:    public 
@@ -49,6 +66,7 @@ public:
 	//************************************
 	bool IsPlaying() const;
 
+	//************************************
 	// Method:    GetSnake
 	// FullName:  Game::GetSnake
 	// Access:    public 
@@ -75,7 +93,7 @@ public:
 	//************************************
 	int GetScore() const { return m_iScore; }
 
-		//************************************
+	//************************************
 	// Method:    IsGameOver
 	// FullName:  Game::IsGameOver
 	// Access:    private 

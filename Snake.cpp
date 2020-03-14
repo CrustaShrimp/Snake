@@ -42,6 +42,10 @@ LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 // Processes OK and Cancel buttons
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
+// Callback for the Help popup window.
+// Processes Close button
+INT_PTR CALLBACK    Help(HWND, UINT, WPARAM, LPARAM);
+
 // Callback for Startup window
 // Sets icon
 // Processes radiobuttons (difficulty)
@@ -433,6 +437,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             case IDM_ABOUT:
                 DialogBox(g_hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
+            case IDM_HELP:
+                DialogBox(g_hInst, MAKEINTRESOURCE(IDD_HELP), hWnd, Help);
+                break;
             case IDM_EXIT:
                 DestroyWindow(hWnd);
                 break;
@@ -504,6 +511,34 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     return (INT_PTR)FALSE;
 }
 
+// Message handler for about box.
+INT_PTR CALLBACK Help(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    UNREFERENCED_PARAMETER(lParam);
+    switch (message)
+    {
+    case WM_INITDIALOG:
+    {
+        TheGame.TogglePause(true);
+        HICON hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_BLOCKSNAKE));
+        SendMessage(hDlg, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+        return (INT_PTR)TRUE;
+    }
+    case WM_COMMAND:
+        if (LOWORD(wParam) == IDCLS)
+        {
+            EndDialog(hDlg, LOWORD(wParam));
+            if (TheGame.AllowedToUnpause())
+            {
+                TheGame.TogglePause(false);
+            }
+            return (INT_PTR)TRUE;
+        }
+        break;
+    }
+    return (INT_PTR)FALSE;
+}
+
 // Message handler for Startup box.
 INT_PTR CALLBACK Startup(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -513,6 +548,7 @@ INT_PTR CALLBACK Startup(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_INITDIALOG:
     {
         TheGame.TogglePause(true);
+        TheGame.SetGameNotPlaying();
         const BOOL SoundEnabled = TheGame.GetSoundEnabled();
         UINT DefaultDifficulty = IDC_SETEASY;
         switch (g_eDifficulty)
@@ -543,13 +579,14 @@ INT_PTR CALLBACK Startup(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             case IDC_SETEASY:
                 g_eDifficulty = DIFFICULTY::EASY;
                 break;
-            
             case IDC_SETMEDIUM:
                 g_eDifficulty = DIFFICULTY::MEDIUM;
                 break;
-            
             case IDC_SETHARD:
                 g_eDifficulty = DIFFICULTY::HARD;
+                break;
+            case IDHELP:
+                DialogBox(g_hInst, MAKEINTRESOURCE(IDD_HELP), hDlg, Help);
                 break;
             case IDSTART:
             {
