@@ -23,12 +23,12 @@ enum class EDIFFICULTY
 //
 // Method:    PlaySnakeJazz
 // FullName:  PlaySnakeJazz
-// Access:    public static
+// Access:    public
 // Returns:   void
 // Qualifier:
 // Parameter: const bool bPlay
 //************************************
-static void PlaySnakeJazz(const bool bPlay);
+void PlaySnakeJazz(const bool bPlay);
 
 
 //************************************
@@ -37,12 +37,12 @@ static void PlaySnakeJazz(const bool bPlay);
 //
 // Method:    TranslateGameToDisplay
 // FullName:  TranslateGameToDisplay
-// Access:    public static 
+// Access:    public constexpr 
 // Returns:   int
 // Qualifier:
 // Parameter: const int iGameSize
 //************************************
-static int TranslateGameToDisplay(const int iGameSize) { return 8 * iGameSize; }
+constexpr int TranslateGameToDisplay(const int iGameSize) { return 8 * iGameSize; }
 
 //************************************
 // Translate game coordinates into 
@@ -53,9 +53,9 @@ static int TranslateGameToDisplay(const int iGameSize) { return 8 * iGameSize; }
 //
 // Method:    TranslateGameToDisplay
 // FullName:  TranslateGameToDisplay
-// Access:    public static 
+// Access:    public constexpr 
 // Returns:   IntPair
 // Qualifier:
 // Parameter: const IntPair Coordinates
 //************************************
-static IntPair TranslateGameToDisplay(const IntPair Coordinates);
+constexpr IntPair TranslateGameToDisplay(const IntPair Coordinates);

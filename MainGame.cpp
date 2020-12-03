@@ -71,7 +71,7 @@ void CGame::Play()
     };
 
     // 3: check gameover (snakehead touching snake)
-    if (TestElementInSnake(NewSnakeHead))
+    if (TestElementInSnake(NewSnakeHead, m_vSnake))
     {
         // Game Over
         m_bGameOver = true;
@@ -93,11 +93,6 @@ void CGame::Play()
     {
         // 5: if not eaten, pop
         m_vSnake.pop_back();
-    }
-    // 7: Set new food if food is eaten
-    if (!m_Food.GetActive())
-    {
-        m_Food = GenerateFood();
     }
     // continues
 }
@@ -188,8 +183,8 @@ void CGame::InitialiseGame()
     const CGridElement SnakeBeginPoint(iMiddle, iMiddle);
     m_vSnake.push_back(SnakeBeginPoint);
 
-    // 2: init food at random point, not snake point!
-    m_Food = GenerateFood();
+    // 2: make sure the food is reset, done in separate thread
+    ResetFood();
     // 3: (re)init score, game over and gamerunning
     m_iScore = 0;
     m_bGameRunning = false;
@@ -198,32 +193,36 @@ void CGame::InitialiseGame()
     m_bInitialized = true;
 }
 
-CGridElement CGame::GenerateFood() const
+void CGame::GenerateFood(bool& bKeepRunning, CGame& ActiveGame)
 {
-    // Generate a food item somewhere
-    // It cannot be in the snake set!
-    bool bFoodLocationVerified = false;
-    int iTries = 0;
-    while (!bFoodLocationVerified && iTries < 50)
+    while(bKeepRunning)
     {
-        const int iFoodX = std::rand() % GRIDSIZE;
-        const int iFoodY = std::rand() % GRIDSIZE;
-        CGridElement NewFood(iFoodX, iFoodY);
-        // Check validity of the NewFood location, it cannot be inside the snake
-        bFoodLocationVerified = !TestElementInSnake(NewFood);
-        if (bFoodLocationVerified)
+        // Check if game is running
+        if (ActiveGame.IsPlaying())
         {
-            NewFood.SetActive(true);
-            return NewFood;
+            // Generate a food item somewhere
+            // It cannot be in the snake set!
+            bool bFoodLocationVerified = ActiveGame.m_Food.GetActive();
+            while(!bFoodLocationVerified)
+            {
+                const int iFoodX = std::rand() % GRIDSIZE;
+                const int iFoodY = std::rand() % GRIDSIZE;
+                ActiveGame.m_Food = CGridElement(iFoodX, iFoodY);
+                // Check validity of the NewFood location, it cannot be inside the snake
+                bFoodLocationVerified = !TestElementInSnake(ActiveGame.m_Food, ActiveGame.m_vSnake);
+                if(bFoodLocationVerified)
+                {
+                    ActiveGame.m_Food.SetActive(true);
+                    break;
+                }
+            }
         }
-        iTries++;
     }
-    return CGridElement(0,0);
 }
 
-bool CGame::TestElementInSnake(const CGridElement& ToTest) const
+bool CGame::TestElementInSnake(const CGridElement& ToTest, const std::vector<CGridElement>& vSnake)
 {
-    const bool bFound = std::accumulate(m_vSnake.cbegin(), m_vSnake.cend(), false, [&ToTest](bool bEqual, const CGridElement SnakeElement)->bool
+    const bool bFound = std::accumulate(vSnake.cbegin(), vSnake.cend(), false, [&ToTest](bool bEqual, const CGridElement& SnakeElement)->bool
         {
             if (bEqual)
             {

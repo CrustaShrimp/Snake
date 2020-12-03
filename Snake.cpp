@@ -8,6 +8,7 @@
 #include <cassert>          // assert
 #include <algorithm>        // std::for_each
 #include <mmsystem.h>       // PlaySound()
+#include <thread>
 
 #define MAX_LOADSTRING 100
 #define LINETHICKNESS 4     // For drawing the border of snakefield
@@ -22,8 +23,8 @@ CGame        TheGame;                        // Instance of the game
 EDIFFICULTY  g_eDifficulty = EDIFFICULTY::UNINIT;         
 
 
-static int iStart = 30;                                         // Start offset of the snake playing field
-static int iEnd = iStart + TranslateGameToDisplay(GRIDSIZE);    // End of the snake playing field
+constexpr int iStart = 30;                                         // Start offset of the snake playing field
+constexpr int iEnd = iStart + TranslateGameToDisplay(GRIDSIZE);    // End of the snake playing field
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -79,6 +80,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
 
+    bool bProgramRunning = true;
+    // Make new thread: Generate food
+    std::thread thGenerateFood(&CGame::GenerateFood, std::ref(bProgramRunning), std::ref(TheGame));
+
     // Main message loop:
     while (GetMessage(&msg, nullptr, 0, 0))
     {
@@ -88,6 +93,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             DispatchMessage(&msg);
         }
     }
+    bProgramRunning = false;
+    thGenerateFood.join();
     return (int) msg.wParam;
 }
 
@@ -195,7 +202,7 @@ void DrawGivenGEWithColor(const CGridElement& GE, HDC hdc, const HBRUSH hbrBrush
 // Returns:   CString
 // Qualifier:
 //************************************
-CString GetScoreString()
+CString GetScoreString() noexcept
 {
     //Get score and make it into a string
     // formatting example: 00005
@@ -430,7 +437,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             case IDM_OPTIONS_SOUND:
             {
                 const UINT uiState = GetMenuState(hmenu, IDM_OPTIONS_SOUND, MF_BYCOMMAND);
-                const bool bEnable = uiState == MF_CHECKED;
+                const bool bEnable = uiState != MF_CHECKED;
                 ToggleSound(hWnd, bEnable);
                 break;
             }
@@ -671,7 +678,7 @@ void PlaySnakeJazz(const bool bPlay)
     }
 }
 
-IntPair TranslateGameToDisplay(const IntPair Coordinates)
+constexpr IntPair TranslateGameToDisplay(const IntPair Coordinates)
 {
     const int iX = TranslateGameToDisplay(Coordinates.first);
     const int iY = TranslateGameToDisplay(Coordinates.second);

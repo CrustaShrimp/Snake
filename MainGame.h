@@ -175,17 +175,31 @@ public:
     {
         m_bSoundEnabled = bEnabled;
     }
-private:
+
     //************************************
     // Method:    GenerateFood
-    // FullName:  Game::GenerateFood
-    // Access:    private 
-    // Returns:   GridElement
-    // Qualifier: const
+    // FullName:  CGame::GenerateFood
+    // Access:    public static 
+    // Returns:   void
+    // Qualifier:
+    // Parameter: bool & bKeepRunning
+    // Parameter: CGame & ActiveGame
     //************************************
-    CGridElement GenerateFood() const;
+    static void GenerateFood(bool& bKeepRunning, CGame& ActiveGame);
 
+    //************************************
+    // Method:    ResetFood
+    // FullName:  CGame::ResetFood
+    // Access:    public 
+    // Returns:   void
+    // Qualifier: noexcept
+    //************************************
+    void ResetFood() noexcept 
+    { 
+        m_Food.SetActive(false); 
+    }
 
+private:
     //************************************
     // Method:    TestElementInSnake
     // FullName:  Game::TestElementInSnake
@@ -193,8 +207,9 @@ private:
     // Returns:   bool
     // Qualifier: const
     // Parameter: const GridElement & ToTest
+    // Parameter: const std::vector<CGridElement>& vSnake
     //************************************
-    bool TestElementInSnake(const CGridElement& ToTest) const;
+    static bool TestElementInSnake(const CGridElement& ToTest, const std::vector<CGridElement>& vSnake);
 
     int                         m_iScore;
     std::vector<CGridElement>   m_vSnake;
