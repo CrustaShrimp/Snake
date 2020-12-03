@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Snake", "Snake.vcxproj", "{B9A752E5-D808-4E17-87C1-DCB327CDB35B}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SnakeInstaller", "..\SnakeInstaller\SnakeInstaller.vdproj", "{BA891DB0-32AB-485E-A87D-F5EDF2CD5FE8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{B9A752E5-D808-4E17-87C1-DCB327CDB35B}.Release|x64.Build.0 = Release|x64
 		{B9A752E5-D808-4E17-87C1-DCB327CDB35B}.Release|x86.ActiveCfg = Release|Win32
 		{B9A752E5-D808-4E17-87C1-DCB327CDB35B}.Release|x86.Build.0 = Release|Win32
+		{BA891DB0-32AB-485E-A87D-F5EDF2CD5FE8}.Debug|x64.ActiveCfg = Debug
+		{BA891DB0-32AB-485E-A87D-F5EDF2CD5FE8}.Debug|x64.Build.0 = Debug
+		{BA891DB0-32AB-485E-A87D-F5EDF2CD5FE8}.Debug|x86.ActiveCfg = Debug
+		{BA891DB0-32AB-485E-A87D-F5EDF2CD5FE8}.Debug|x86.Build.0 = Debug
+		{BA891DB0-32AB-485E-A87D-F5EDF2CD5FE8}.Release|x64.ActiveCfg = Release
+		{BA891DB0-32AB-485E-A87D-F5EDF2CD5FE8}.Release|x64.Build.0 = Release
+		{BA891DB0-32AB-485E-A87D-F5EDF2CD5FE8}.Release|x86.ActiveCfg = Release
+		{BA891DB0-32AB-485E-A87D-F5EDF2CD5FE8}.Release|x86.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
