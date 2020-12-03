@@ -1,39 +1,30 @@
 #include "GridElement.h"
 
-GridElement::GridElement()
-	:m_iX(0)
-	,m_iY(0)
-	,m_bActive(false)
+CGridElement::CGridElement()
+:CGridElement(0, 0)
 {
-
 }
 
-GridElement::GridElement(const int iX, const int iY)
-	:m_iX(iX % GRIDSIZE)
-	,m_iY(iY % GRIDSIZE)
-	,m_bActive(false)
+CGridElement::CGridElement(const int iX, const int iY)
+: m_iX(iX % GRIDSIZE)
+, m_iY(iY % GRIDSIZE)
+, m_bActive(false)
 {
-
 }
 
-GridElement::~GridElement()
+bool CGridElement::operator==(const CGridElement& GECompare) const
 {
-
+    const bool bEqualX = m_iX == GECompare.m_iX;
+    const bool bEqualY = m_iY == GECompare.m_iY;
+    return bEqualX && bEqualY;
 }
 
-bool GridElement::operator==(const GridElement GECompare) const
+void CGridElement::AddX(const int iAddX)
 {
-	const bool bEqualX = m_iX == GECompare.m_iX;
-	const bool bEqualY = m_iY == GECompare.m_iY;
-	return bEqualX && bEqualY;
+    m_iX = (m_iX + iAddX + GRIDSIZE) % GRIDSIZE; // Add GRIDSIZE for negative clipping
 }
 
-void GridElement::AddX(const int iAddX)
+void CGridElement::AddY(const int iAddY)
 {
-	m_iX = (m_iX + iAddX + GRIDSIZE) % GRIDSIZE; // Add GRIDSIZE for negative clipping
-}
-
-void GridElement::AddY(const int iAddY)
-{
-	m_iY = (m_iY + iAddY + GRIDSIZE) % GRIDSIZE; // Add GRIDSIZE for negative clipping
+    m_iY = (m_iY + iAddY + GRIDSIZE) % GRIDSIZE; // Add GRIDSIZE for negative clipping
 }

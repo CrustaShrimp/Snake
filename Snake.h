@@ -2,11 +2,11 @@
 #include <afxwin.h>         // CButton, CString
 #include "resource.h"
 #include <utility>
-#define GRIDSIZE 50
 
+constexpr int GRIDSIZE = 50;
 typedef std::pair<int, int> IntPair;
 
-enum class DIFFICULTY
+enum class EDIFFICULTY
 {
     UNINIT = 200,
     EASY   = 150,
@@ -23,12 +23,12 @@ enum class DIFFICULTY
 //
 // Method:    PlaySnakeJazz
 // FullName:  PlaySnakeJazz
-// Access:    public 
+// Access:    public static
 // Returns:   void
 // Qualifier:
 // Parameter: const bool bPlay
 //************************************
-void PlaySnakeJazz(const bool bPlay);
+static void PlaySnakeJazz(const bool bPlay);
 
 
 //************************************
