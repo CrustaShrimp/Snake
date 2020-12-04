@@ -3,7 +3,6 @@
 #include <ctime>
 #include <cstdlib>
 #include <cassert>
-#include <numeric>
 
 CGame::CGame()
     : m_iScore(0)
@@ -222,14 +221,12 @@ void CGame::GenerateFood(bool& bKeepRunning, CGame& ActiveGame)
 
 bool CGame::TestElementInSnake(const CGridElement& ToTest, const std::vector<CGridElement>& vSnake)
 {
-    const bool bFound = std::accumulate(vSnake.cbegin(), vSnake.cend(), false, [&ToTest](bool bEqual, const CGridElement& SnakeElement)->bool
+    for(const CGridElement& SnakeElement : vSnake)
+    {
+        if(ToTest == SnakeElement)
         {
-            if (bEqual)
-            {
-                return bEqual;
-            }
-            bEqual = SnakeElement == ToTest;
-            return bEqual;
-        });
-    return bFound;
+            return true;
+        }
+    }
+    return false;
 }
