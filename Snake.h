@@ -2,11 +2,11 @@
 #include <afxwin.h>         // CButton, CString
 #include "resource.h"
 #include <utility>
-#define GRIDSIZE 50
 
+constexpr int GRIDSIZE = 50;
 typedef std::pair<int, int> IntPair;
 
-enum class DIFFICULTY
+enum class EDIFFICULTY
 {
     UNINIT = 200,
     EASY   = 150,
@@ -23,7 +23,7 @@ enum class DIFFICULTY
 //
 // Method:    PlaySnakeJazz
 // FullName:  PlaySnakeJazz
-// Access:    public 
+// Access:    public
 // Returns:   void
 // Qualifier:
 // Parameter: const bool bPlay
@@ -37,12 +37,12 @@ void PlaySnakeJazz(const bool bPlay);
 //
 // Method:    TranslateGameToDisplay
 // FullName:  TranslateGameToDisplay
-// Access:    public static 
+// Access:    public constexpr 
 // Returns:   int
 // Qualifier:
 // Parameter: const int iGameSize
 //************************************
-static int TranslateGameToDisplay(const int iGameSize) { return 8 * iGameSize; }
+constexpr int TranslateGameToDisplay(const int iGameSize) { return 8 * iGameSize; }
 
 //************************************
 // Translate game coordinates into 
@@ -53,9 +53,9 @@ static int TranslateGameToDisplay(const int iGameSize) { return 8 * iGameSize; }
 //
 // Method:    TranslateGameToDisplay
 // FullName:  TranslateGameToDisplay
-// Access:    public static 
+// Access:    public constexpr 
 // Returns:   IntPair
 // Qualifier:
 // Parameter: const IntPair Coordinates
 //************************************
-static IntPair TranslateGameToDisplay(const IntPair Coordinates);
+constexpr IntPair TranslateGameToDisplay(const IntPair Coordinates);

@@ -8,6 +8,7 @@
 #include <cassert>          // assert
 #include <algorithm>        // std::for_each
 #include <mmsystem.h>       // PlaySound()
+#include <thread>
 
 #define MAX_LOADSTRING 100
 #define LINETHICKNESS 4     // For drawing the border of snakefield
@@ -18,12 +19,12 @@ HWND        g_hWnd = NULL;                  // Handle of the main window
 WCHAR       szTitle[MAX_LOADSTRING];        // The title bar text
 WCHAR       szWindowClass[MAX_LOADSTRING];  // The main window class name
 
-Game        TheGame;                        // Instance of the game
-DIFFICULTY  g_eDifficulty = DIFFICULTY::UNINIT;         
+CGame        TheGame;                        // Instance of the game
+EDIFFICULTY  g_eDifficulty = EDIFFICULTY::UNINIT;         
 
 
-static int iStart = 30;                                         // Start offset of the snake playing field
-static int iEnd = iStart + TranslateGameToDisplay(GRIDSIZE);    // End of the snake playing field
+constexpr int iStart = 30;                                         // Start offset of the snake playing field
+constexpr int iEnd = iStart + TranslateGameToDisplay(GRIDSIZE);    // End of the snake playing field
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -79,6 +80,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
 
+    bool bProgramRunning = true;
+    // Make new thread: Generate food
+    std::thread thGenerateFood(&CGame::GenerateFood, std::ref(bProgramRunning), std::ref(TheGame));
+
     // Main message loop:
     while (GetMessage(&msg, nullptr, 0, 0))
     {
@@ -88,6 +93,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             DispatchMessage(&msg);
         }
     }
+    bProgramRunning = false;
+    thGenerateFood.join();
     return (int) msg.wParam;
 }
 
@@ -169,7 +176,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 // Parameter: HDC hdc
 // Parameter: const HBRUSH hbrBrush
 //************************************
-void DrawGivenGEWithColor(const GridElement& GE, HDC hdc, const HBRUSH hbrBrush)
+void DrawGivenGEWithColor(const CGridElement& GE, HDC hdc, const HBRUSH hbrBrush)
 {
     // Get XY pair in game coordinates
     const IntPair XYPair = GE.GetXY();
@@ -195,7 +202,7 @@ void DrawGivenGEWithColor(const GridElement& GE, HDC hdc, const HBRUSH hbrBrush)
 // Returns:   CString
 // Qualifier:
 //************************************
-CString GetScoreString()
+CString GetScoreString() noexcept
 {
     //Get score and make it into a string
     // formatting example: 00005
@@ -225,12 +232,12 @@ void DrawSnake(HWND hWnd, HDC hdc)
     const HBRUSH hbrOrange = CreateSolidBrush(RGB(255, 180,   0));
 
     // Get snake vector
-    const std::vector<GridElement>* const pSnakeVector = TheGame.GetSnake();
+    const std::vector<CGridElement>* const pSnakeVector = TheGame.GetSnake();
     // Draw each element of the snake
-    std::for_each(pSnakeVector->begin(), pSnakeVector->end(), [&](const GridElement& GE){DrawGivenGEWithColor(GE, hdc, hbrBlack);});
+    std::for_each(pSnakeVector->begin(), pSnakeVector->end(), [&](const CGridElement& GE){DrawGivenGEWithColor(GE, hdc, hbrBlack);});
 
     //Get the food point
-    const GridElement& GEFood = TheGame.GetFoodRef();
+    const CGridElement& GEFood = TheGame.GetFoodRef();
     if (GEFood.GetActive())
     {
         DrawGivenGEWithColor(GEFood,hdc,hbrOrange);
@@ -337,25 +344,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         case VK_LEFT:
 
             // Process the LEFT ARROW key. 
-            TheGame.SetDirection(Game::DIRECTION::LEFT);
+            TheGame.SetDirection(CGame::EDIRECTION::LEFT);
             break;
 
         case VK_RIGHT:
 
             // Process the RIGHT ARROW key. 
-            TheGame.SetDirection(Game::DIRECTION::RIGHT);
+            TheGame.SetDirection(CGame::EDIRECTION::RIGHT);
             break;
 
         case VK_UP:
 
             // Process the UP ARROW key. 
-            TheGame.SetDirection(Game::DIRECTION::UP);
+            TheGame.SetDirection(CGame::EDIRECTION::UP);
             break;
 
         case VK_DOWN:
 
             // Process the DOWN ARROW key. 
-            TheGame.SetDirection(Game::DIRECTION::DOWN);
+            TheGame.SetDirection(CGame::EDIRECTION::DOWN);
             break;
 
         case VK_ESCAPE:
@@ -393,7 +400,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 UINT state = GetMenuState(hmenu,IDM_DIFFICULTY_EASY, MF_BYCOMMAND);
                 if (state == MF_UNCHECKED)
                 {
-                    g_eDifficulty = DIFFICULTY::EASY;
+                    g_eDifficulty = EDIFFICULTY::EASY;
                     CheckMenuItem(hmenu,   IDM_DIFFICULTY_EASY,   MF_CHECKED);
                     CheckMenuItem(hmenu, IDM_DIFFICULTY_MEDIUM, MF_UNCHECKED);
                     CheckMenuItem(hmenu,   IDM_DIFFICULTY_HARD, MF_UNCHECKED);
@@ -406,7 +413,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 UINT state = GetMenuState(hmenu,IDM_DIFFICULTY_MEDIUM, MF_BYCOMMAND);
                 if (state == MF_UNCHECKED)
                 {
-                    g_eDifficulty = DIFFICULTY::MEDIUM;
+                    g_eDifficulty = EDIFFICULTY::MEDIUM;
                     CheckMenuItem(hmenu,   IDM_DIFFICULTY_EASY, MF_UNCHECKED);
                     CheckMenuItem(hmenu, IDM_DIFFICULTY_MEDIUM,   MF_CHECKED);
                     CheckMenuItem(hmenu,   IDM_DIFFICULTY_HARD, MF_UNCHECKED);
@@ -419,7 +426,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 UINT state = GetMenuState(hmenu,IDM_DIFFICULTY_HARD, MF_BYCOMMAND);
                 if (state == MF_UNCHECKED)
                 {
-                    g_eDifficulty = DIFFICULTY::HARD;
+                    g_eDifficulty = EDIFFICULTY::HARD;
                     CheckMenuItem(hmenu,   IDM_DIFFICULTY_EASY, MF_UNCHECKED);
                     CheckMenuItem(hmenu, IDM_DIFFICULTY_MEDIUM, MF_UNCHECKED);
                     CheckMenuItem(hmenu,   IDM_DIFFICULTY_HARD,   MF_CHECKED);
@@ -430,7 +437,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             case IDM_OPTIONS_SOUND:
             {
                 const UINT uiState = GetMenuState(hmenu, IDM_OPTIONS_SOUND, MF_BYCOMMAND);
-                const bool bEnable = uiState == MF_CHECKED;
+                const bool bEnable = uiState != MF_CHECKED;
                 ToggleSound(hWnd, bEnable);
                 break;
             }
@@ -553,14 +560,14 @@ INT_PTR CALLBACK Startup(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         UINT DefaultDifficulty = IDC_SETEASY;
         switch (g_eDifficulty)
         {
-        case DIFFICULTY::UNINIT:
-        case DIFFICULTY::EASY:
+        case EDIFFICULTY::UNINIT:
+        case EDIFFICULTY::EASY:
             DefaultDifficulty = IDC_SETEASY;
             break;
-        case DIFFICULTY::MEDIUM:
+        case EDIFFICULTY::MEDIUM:
             DefaultDifficulty = IDC_SETMEDIUM;
             break;
-        case DIFFICULTY::HARD:
+        case EDIFFICULTY::HARD:
             DefaultDifficulty = IDC_SETHARD;
             break;
         default:
@@ -577,13 +584,13 @@ INT_PTR CALLBACK Startup(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         switch (LOWORD(wParam))
         {
             case IDC_SETEASY:
-                g_eDifficulty = DIFFICULTY::EASY;
+                g_eDifficulty = EDIFFICULTY::EASY;
                 break;
             case IDC_SETMEDIUM:
-                g_eDifficulty = DIFFICULTY::MEDIUM;
+                g_eDifficulty = EDIFFICULTY::MEDIUM;
                 break;
             case IDC_SETHARD:
-                g_eDifficulty = DIFFICULTY::HARD;
+                g_eDifficulty = EDIFFICULTY::HARD;
                 break;
             case IDHELP:
                 DialogBox(g_hInst, MAKEINTRESOURCE(IDD_HELP), hDlg, Help);
@@ -595,17 +602,17 @@ INT_PTR CALLBACK Startup(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 switch (g_eDifficulty)
                 {
                     default: // Easy is the default setting
-                    case DIFFICULTY::EASY:
+                    case EDIFFICULTY::EASY:
                         CheckMenuItem(hmenu,   IDM_DIFFICULTY_EASY,   MF_CHECKED);
                         CheckMenuItem(hmenu, IDM_DIFFICULTY_MEDIUM, MF_UNCHECKED);
                         CheckMenuItem(hmenu,   IDM_DIFFICULTY_HARD, MF_UNCHECKED);
                         break;
-                    case DIFFICULTY::MEDIUM:
+                    case EDIFFICULTY::MEDIUM:
                         CheckMenuItem(hmenu,   IDM_DIFFICULTY_EASY, MF_UNCHECKED);
                         CheckMenuItem(hmenu, IDM_DIFFICULTY_MEDIUM,   MF_CHECKED);
                         CheckMenuItem(hmenu,   IDM_DIFFICULTY_HARD, MF_UNCHECKED);
                         break;
-                    case DIFFICULTY::HARD:
+                    case EDIFFICULTY::HARD:
                         CheckMenuItem(hmenu,   IDM_DIFFICULTY_EASY, MF_UNCHECKED);
                         CheckMenuItem(hmenu, IDM_DIFFICULTY_MEDIUM, MF_UNCHECKED);
                         CheckMenuItem(hmenu,   IDM_DIFFICULTY_HARD,   MF_CHECKED);
@@ -671,7 +678,7 @@ void PlaySnakeJazz(const bool bPlay)
     }
 }
 
-IntPair TranslateGameToDisplay(const IntPair Coordinates)
+constexpr IntPair TranslateGameToDisplay(const IntPair Coordinates)
 {
     const int iX = TranslateGameToDisplay(Coordinates.first);
     const int iY = TranslateGameToDisplay(Coordinates.second);
