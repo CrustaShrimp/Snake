@@ -7,7 +7,11 @@
 #define IDS_APP_TITLE                   103
 #define IDD_ABOUTBOX                    103
 #define IDM_ABOUT                       104
+#define IDS_GAMEOVER_TITLE              104
 #define IDM_EXIT                        105
+#define IDS_STARTUP_TITLE               105
+#define IDS_ABOUT_TITLE                 106
+#define IDS_HELP_TITLE                  107
 #define IDC_SNAKE                       109
 #define IDR_MAINFRAME                   128
 #define IDD_GAMEOVER                    129
@@ -24,6 +28,7 @@
 #define IDC_YOURSCORE                   1002
 #define IDC_SCORE                       1003
 #define IDC_SETEASY                     1003
+#define IDC_SCORE_LBL                   1003
 #define IDC_SETMEDIUM                   1004
 #define IDC_SETHARD                     1005
 #define IDSTART                         1007
