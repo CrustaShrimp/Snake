@@ -1,6 +1,5 @@
 // Snake.cpp : Defines the entry point for the application.
 //
-
 #include "MainGame.h"
 #include "Snake.h"
 #include "resource.h"
@@ -14,12 +13,18 @@
 #define LINETHICKNESS 4     // For drawing the border of snakefield
 
 // Global Variables:
-HINSTANCE   g_hInst;                        // Current instance
-HWND        g_hWnd = NULL;                  // Handle of the main window
-WCHAR       szTitle[MAX_LOADSTRING];        // The title bar text
-WCHAR       szWindowClass[MAX_LOADSTRING];  // The main window class name
+HINSTANCE   g_hInst;                            // Current instance
+HWND        g_hWnd = NULL;                      // Handle of the main window
+WCHAR       szTitle[MAX_LOADSTRING];            // The title bar text
+WCHAR       szWindowClass[MAX_LOADSTRING];      // The main window class name
 
-CGame        TheGame;                        // Instance of the game
+//TODO(kevin): apply fix for other dialogs
+WCHAR       szGameOverTitle[MAX_LOADSTRING];    // The game over dialog caption
+WCHAR       szStartUpTitle[MAX_LOADSTRING];     // The startup dialog caption
+WCHAR       szAboutTitle[MAX_LOADSTRING];       // The about dialog caption
+WCHAR       szHelpTitle[MAX_LOADSTRING];        // The help dialog caption
+
+CGame        TheGame;                           // Instance of the game
 EDIFFICULTY  g_eDifficulty = EDIFFICULTY::UNINIT;         
 
 
@@ -67,6 +72,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDS_GAMEOVER_TITLE, szGameOverTitle, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDS_STARTUP_TITLE, szStartUpTitle, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDS_ABOUT_TITLE, szAboutTitle, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDS_HELP_TITLE, szHelpTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_SNAKE, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
@@ -504,6 +513,7 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         TheGame.TogglePause(true);
         HICON hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_BLOCKSNAKE));
         SendMessage(hDlg, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+        SetWindowText(hDlg, szAboutTitle);
         return (INT_PTR)TRUE;
     }
     case WM_COMMAND:
@@ -529,6 +539,7 @@ INT_PTR CALLBACK Help(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         TheGame.TogglePause(true);
         HICON hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_BLOCKSNAKE));
         SendMessage(hDlg, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+        SetWindowText(hDlg, szHelpTitle);
         return (INT_PTR)TRUE;
     }
     case WM_COMMAND:
@@ -576,6 +587,7 @@ INT_PTR CALLBACK Startup(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
          
         HICON hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_BLOCKSNAKE));
         SendMessage(hDlg, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+        SetWindowText(hDlg, szStartUpTitle);
         CheckDlgButton(hDlg,IDC_SOUND,SoundEnabled);
         CheckRadioButton(hDlg,IDC_SETEASY , IDC_SETHARD, DefaultDifficulty);
         return (INT_PTR)TRUE;
@@ -643,9 +655,10 @@ INT_PTR CALLBACK GameOver(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     {
         HICON hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_BLOCKSNAKE));
         SendMessage(hDlg, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
-        HWND hWndScoreTextBox = GetDlgItem(hDlg,IDC_SCORE);
+        HWND hWndScoreLabel = GetDlgItem(hDlg,IDC_SCORE_LBL);
         CString strScore = GetScoreString();
-        SendMessage(hWndScoreTextBox, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)strScore);
+        SendMessage(hWndScoreLabel, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)strScore);
+        SetWindowText(hDlg, szGameOverTitle); // will automatically refresh the window
         return (INT_PTR) TRUE;
         break;
     }
