@@ -114,6 +114,7 @@ void CGame::SetDirection(const EDIRECTION eDirection)
 {
     if (!m_bGameRunning)
     {
+        m_bSoundEnabled = true;
         // We start playing now, or resume from pause
         PlaySnakeJazz(true);
     }
