@@ -316,7 +316,7 @@ void DrawPause(HWND hWnd, HDC hdc)
 void ToggleSound(const HWND& hWnd, const bool bEnable)
 {
     HMENU hmenu = GetMenu(hWnd);
-    if (bEnable) // Go to enabled mode
+    if (!bEnable) // Go to enabled mode
     {
         TheGame.SetSoundEnabled(true);
         // Play snakejazz when playing, not paused, not game over
@@ -446,7 +446,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             case IDM_OPTIONS_SOUND:
             {
                 const UINT uiState = GetMenuState(hmenu, IDM_OPTIONS_SOUND, MF_BYCOMMAND);
-                const bool bEnable = uiState != MF_CHECKED;
+                const bool bEnable = uiState == MF_CHECKED;
                 ToggleSound(hWnd, bEnable);
                 break;
             }
@@ -520,7 +520,10 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
         {
             EndDialog(hDlg, LOWORD(wParam));
-            TheGame.TogglePause(false);
+            if (TheGame.AllowedToUnpause())
+            {
+                TheGame.TogglePause(false);
+            }
             return (INT_PTR)TRUE;
         }
         break;
